@@ -7,32 +7,41 @@
 
 SRC = 	src/*.c
 
-BINARY = corewar_test
+BINARY_ASM = asm
+BINARY_COR = corewar
 # corewar/corewar
 
-LIB = -I./include/ -L./lib/my/ -lm -lmy
+
+
+LIB = -I./include/ -L./lib/my/ -lmy
 
 all:
 		@cp ./lib/my/my.h include/my.h
 		@gcc -c lib/my/*.c
 		@ar rc lib/my/libmy.a *.o
-		@cp ./lib/my/libmy.a lib/libmy.a
-		@gcc -o $(BINARY) -g $(SRC) $(LIB) -g3
-		@chmod 777 $(BINARY)
+		@gcc -o $(BINARY_ASM)_ -g src_$(BINARY_ASM)/*.c $(LIB) -g3
+		@gcc -o $(BINARY_COR)_ -g src_$(BINARY_COR)/*.c $(LIB) -g3
+		mv $(BINARY_ASM)_ $(BINARY_ASM)/$(BINARY_ASM)
+		mv $(BINARY_COR)_ $(BINARY_COR)/$(BINARY_COR)
 		@make clean
 
 clean:
 		rm -f *.o
 		rm -f *.gcno
 		rm -f *.gcda
-		rm -f tests_bin
 
 fclean: clean
-		rm lib/my/libmy.a
-		rm lib/libmy.a
-		rm $(BINARY)
+		rm -f lib/my/libmy.a
+		rm -f lib/libmy.a
+		rm -f $(BINARY_COR)/$(BINARY_COR)
+		rm -f $(BINARY_ASM)/$(BINARY_ASM)
 
 re:	fclean all
+
+mac_del:
+		rm -Rf *.dSYM
+		rm -Rf .vscode
+		rm -Rf .DS_Store
 
 auteur:
 		@echo $(USER) is the best
@@ -60,4 +69,4 @@ fm_push:
 # 		./tests_bin < input
 # 		make clean
 
-.PHONY: all clean fclean re push vg_del fm_push #tests_run
+.PHONY: all clean fclean re push vg_del fm_push mac_del #tests_run
