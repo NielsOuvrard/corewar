@@ -14,3 +14,9 @@
 #include <dirent.h>
 #include <time.h>
 #include <getopt.h>
+
+// openfile
+
+char *filepath_to_str (char *filepath);
+
+char **filepath_to_arr (char *filepath);

@@ -11,16 +11,16 @@ BINARY_ASM = asm
 BINARY_COR = corewar
 # corewar/corewar
 
-
+FLAGS = -g3 -g
 
 LIB = -I./include/ -L./lib/my/ -lmy
 
 all:
 		@cp ./lib/my/my.h include/my.h
 		@gcc -c lib/my/*.c
-		@ar rc lib/my/libmy.a *.o
-		@gcc -o $(BINARY_ASM)_ -g src_$(BINARY_ASM)/*.c $(LIB) -g3
-		@gcc -o $(BINARY_COR)_ -g src_$(BINARY_COR)/*.c $(LIB) -g3
+		ar rc lib/my/libmy.a *.o
+		@gcc -o $(BINARY_ASM)_ src_$(BINARY_ASM)/*.c $(LIB) $(LIB)
+		@gcc -o $(BINARY_COR)_ src_$(BINARY_COR)/*.c $(LIB) $(LIB)
 		mv $(BINARY_ASM)_ $(BINARY_ASM)/$(BINARY_ASM)
 		mv $(BINARY_COR)_ $(BINARY_COR)/$(BINARY_COR)
 		@make clean
