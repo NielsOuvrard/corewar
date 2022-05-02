@@ -46,3 +46,24 @@ char **filepath_to_arr (char *filepath)
     free(buff);
     return map;
 }
+
+char *str_plus_one (char *src, char c)
+{
+    int size = my_strlen(src);
+    char *dest = malloc(sizeof(char) * (size + 2));
+    my_strcpy(dest, src);
+    dest[size] = c;
+    dest[size + 1] = '\0';
+    free(src);
+    return dest;
+}
+
+char *str_but_shorter (char *src)
+{
+    char *str = malloc(sizeof(char));
+    str[0] = '\0';
+    for (int i = 0; i < MEM_SIZE; i++)
+        if (src[i])
+            str = str_plus_one(str, src[i]);
+    return str;
+}

@@ -31,21 +31,32 @@ MEM_SIZE modulo.\n");
     return 0;
 }
 
-char **file_cor_to_array(char *filepath);
-
 int main (int ac, char **av)
 {
     if (ac > 1 && !my_strvcmp(av[1], "-h"))
         return help();
     if (ac < 2)
         return 1;
-    char **file = file_cor_to_array(av[1]);
-    if (!file)
-        return 84;
-    my_printf("\nle array :\n");
-    my_show_word_array(file);
-    free_my_arr(file);
-    // my_putstr("The player NB_OF_PLAYER(NAME_OF_PLAYER)is alive.\n");
+    char *str = filepath_to_str(av[1]);
+    char *shorter = str_but_shorter(str);
+    free(str);
+    for (int i = 0; shorter[i]; i++)
+        my_printf("%d\t", shorter[i]);
+    // my_putstr(shorter);
+    my_putstr("\n\n");
+    disp_str_to_hexa(shorter);
+
+    // char **file = file_cor_to_array(av[1]);
+    // if (!file)
+    //     return 84;
+    // my_printf("\nle array :\n");
+    // for (int i = 0; file[i]; i++) {
+    //     if (!(i % 10))
+    //         my_putchar('\n');
+    //     my_printf("%s\t", file[i]);
+    // }
+    // free_my_arr(file);
+    my_putstr("\n\nThe player NB_OF_PLAYER(NAME_OF_PLAYER)is alive.\n");
     // my_putstr("The player NB_OF_PLAYER(NAME_OF_PLAYER)has won.");
     // my_printf("REG_NUMBER : %d\n", REG_NUMBER);
     // my_printf("REG_SIZE : %d\n", REG_SIZE);

@@ -19,4 +19,10 @@
 
 char *filepath_to_str (char *filepath);
 
-char **filepath_to_arr (char *filepath);
+char *str_but_shorter (char *src);
+
+// open file cor
+
+char **file_cor_to_array(char *filepath);
+
+void disp_str_to_hexa (char *str);

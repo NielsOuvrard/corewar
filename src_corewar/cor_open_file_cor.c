@@ -57,3 +57,23 @@ char **file_cor_to_array(char *filepath)
     }
     return array;
 }
+
+void disp_str_to_hexa (char *str)
+{
+    if (!str)
+        return;
+    int b = 0;
+    for (int i = 0; i < MEM_SIZE; i++) {
+        if (str[i]) {
+            char *binary = char_to_bin_str(str[i]);
+            char *hexa = my_int_to_base(my_base_to_int(binary, 2), 16);
+            my_putstr(hexa);
+            my_putchar('\t');
+            free(binary);
+            free(hexa);
+            b++;
+        }
+        if (!(b % 10) && str[i])
+            my_putchar('\n');
+    }
+}
