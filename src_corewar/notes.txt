@@ -1,0 +1,37 @@
+
+// register = 1 value
+
+// APC = compteur de programme
+// contient ptr vers prochaine execution
+// pour savoir où on est / ecrir choses dans la mémoire
+
+// drapeau carry = faux si dernière opération vaut 0
+
+
+// VM : On envoie executions en param, elle execute
+
+// cycle CYCLE_TO_DIE verif que instruction life est emise ? vie : meurt
+
+// si après NBR_LIVE executions de "live" , process tjrs en vie, CYCLE_TO_DIE -= CYCLE_DELTA unitées
+// -> jusqu'a ce qu'in n'y ait plus de process "live"
+
+
+// registre r1 = numéro des programmes donnés au démarrage
+
+
+// chaque element s'executes à la fin de son dernier cycle
+
+
+
+// char *my_scanf (void)
+// {
+//     char *line = NULL;
+//     size_t len = 0;
+//     ssize_t lower_case = 0;
+//     lower_case = getline(&line, &len, stdin);
+//     if (lower_case < 0) {
+//         free(line);
+//         return NULL;
+//     }
+//     return line;
+// }
