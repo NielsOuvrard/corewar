@@ -17,12 +17,12 @@
 
 // openfile
 
-char *filepath_to_str (char *filepath);
+char *filepath_to_str (char *filepath, int *size_str);
 
-char *str_but_shorter (char *src);
+char *str_but_shorter (char *src, int size);
 
 // open file cor
 
 char **file_cor_to_array(char *filepath);
 
-void disp_str_to_hexa (char *str);
+void disp_str_to_hexa (char *str, int size);

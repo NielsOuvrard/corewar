@@ -19,8 +19,8 @@ all:
 		@cp ./lib/my/my.h include/my.h
 		@gcc -c lib/my/*.c
 		ar rc lib/my/libmy.a *.o
-		@gcc -o $(BINARY_ASM)_ src_$(BINARY_ASM)/*.c $(LIB) $(LIB)
-		@gcc -o $(BINARY_COR)_ src_$(BINARY_COR)/*.c $(LIB) $(LIB)
+		@gcc -o $(BINARY_ASM)_ src_$(BINARY_ASM)/*.c $(LIB) $(LIB) $(FLAGS)
+		@gcc -o $(BINARY_COR)_ src_$(BINARY_COR)/*.c $(LIB) $(LIB) $(FLAGS)
 		mv $(BINARY_ASM)_ $(BINARY_ASM)/$(BINARY_ASM)
 		mv $(BINARY_COR)_ $(BINARY_COR)/$(BINARY_COR)
 		@make clean

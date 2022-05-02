@@ -42,12 +42,13 @@ char **copy_array_plus_one (char **src, char *one)
 
 char **file_cor_to_array(char *filepath)
 {
-    char *str = filepath_to_str(filepath);
+    int size = 0;
+    char *str = filepath_to_str(filepath, &size);
     if (!str)
         return NULL;
     char **array = malloc(sizeof(char *));
     array[0] = NULL;
-    for (int i = 0; i < MEM_SIZE; i++) {
+    for (int i = 0; i < size; i++) {
         if (str[i]) {
             char *binary = char_to_bin_str(str[i]);
             char *hexa = my_int_to_base(my_base_to_int(binary, 2), 16);
@@ -58,12 +59,12 @@ char **file_cor_to_array(char *filepath)
     return array;
 }
 
-void disp_str_to_hexa (char *str)
+void disp_str_to_hexa (char *str, int size)
 {
     if (!str)
         return;
     int b = 0;
-    for (int i = 0; i < MEM_SIZE; i++) {
+    for (int i = 0; i < size - 1; i++) {
         if (str[i]) {
             char *binary = char_to_bin_str(str[i]);
             char *hexa = my_int_to_base(my_base_to_int(binary, 2), 16);

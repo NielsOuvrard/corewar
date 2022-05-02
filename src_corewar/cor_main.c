@@ -37,14 +37,20 @@ int main (int ac, char **av)
         return help();
     if (ac < 2)
         return 1;
-    char *str = filepath_to_str(av[1]);
-    char *shorter = str_but_shorter(str);
+    int size = 0;
+    char *str = filepath_to_str(av[1], &size);
+    my_printf("size : %d\n", size);
+    for (int i = 0; i < size; i++)
+        my_printf("%d\t", str[i]);
+
+    char *shorter = str_but_shorter(str, size);
     free(str);
     for (int i = 0; shorter[i]; i++)
         my_printf("%d\t", shorter[i]);
     // my_putstr(shorter);
-    my_putstr("\n\n");
-    disp_str_to_hexa(shorter);
+    my_putstr("en hexa :\n\n");
+    disp_str_to_hexa(shorter, my_strlen(shorter));
+    free(shorter);
 
     // char **file = file_cor_to_array(av[1]);
     // if (!file)
