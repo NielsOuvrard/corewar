@@ -5,12 +5,13 @@
 ** pour open file
 */
 
+#include "op.h"
 #include "my.h"
 #include "cor_header.h"
 
 char *filepath_to_str (char *filepath)
 {
-    int buff_size = 32000, offset = 0, len = 0;
+    int buff_size = MEM_SIZE, offset = 0, len = 0;
     char *buff = malloc(sizeof(char) * buff_size);
     int fp = open(filepath, O_RDONLY);
     if (!fp)
@@ -20,7 +21,6 @@ char *filepath_to_str (char *filepath)
     close(fp);
     if (len < 0)
         return NULL;
-    buff[offset] = '\0';
     return buff;
 }
 

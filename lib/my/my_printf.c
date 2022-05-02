@@ -7,30 +7,13 @@
 #include <stdarg.h>
 #include "my.h"
 
-int flag_s (va_list *list)
-{
-    char *temp = va_arg(*list, char *);
-    if (!temp) {
-        my_putstr("(null)");
-        return 1;
-    }
-    my_putstr(temp);
-    return 0;
-}
+int flag_s (va_list *list);
 
-int flag_c (va_list *list)
-{
-    char temp = va_arg(*list, int);
-    my_putchar(temp);
-    return 0;
-}
+int flag_c (va_list *list);
 
-int flag_d (va_list *list)
-{
-    int temp = va_arg(*list, int);
-    my_putint(temp);
-    return 0;
-}
+int flag_d (va_list *list);
+
+int flag_x (va_list *list);
 
 int swich_to_funct (va_list *list, char c)
 {
@@ -43,6 +26,8 @@ int swich_to_funct (va_list *list, char c)
             return flag_d(list);
         case 'c':
             return flag_c(list);
+        case 'x':
+            return flag_x(list);
         default:
             return 0;
     }

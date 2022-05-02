@@ -80,6 +80,15 @@ int ascii_to_hex(char c)
 //         printf("\n");
 // }
 
+char *char_to_bin_str (char c)
+{
+    char *str = malloc(sizeof(char) * 9);
+    for (int i = 0; i < 8; i++)
+        str[i] = (!!((c << i) & 0x80)) + '0';
+    str[8] = '\0';
+    return str;
+}
+
 char *my_scanf (void)
 {
     char *line = NULL;
@@ -93,6 +102,16 @@ char *my_scanf (void)
     return line;
 }
 
+int my_base_to_int(char *src, int base)
+{
+    int result = 0, b = 0;
+    int i = my_strlen(src);
+    for (i--; i >= 0; i--) {
+        result += CTOI(src[i]) * my_compute_power_rec(base, b++);
+    }
+    return result;
+}
+
 int main (int ac, char **av)
 {
     if (ac > 1 && !my_strvcmp(av[1], "-h"))
@@ -100,53 +119,16 @@ int main (int ac, char **av)
     if (ac < 2)
         return 1;
     my_printf("on ouvre %s\n", av[1]);
-
-    // char a = 'J';
-    // char *str = my_int_to_base(a, 16);
-    // my_printf("%d -> %s\n", a, str);
-    // free(str);
-
-    FILE *fp = fopen(av[1],"r");
-    // unsigned char c1, c2;
-    // int i = 0;
-    // unsigned char sum, final_hex[100 / 2];
-    // for(i = 0; i < 100 / 2; i++) {
-    //     c1 = ascii_to_hex(fgetc(fp));
-    //     c2 = ascii_to_hex(fgetc(fp));
-    //     sum = c1 << 4 | c2;
-    //     final_hex[i] = sum;
-    //     printf("%02x ", sum);
-    // }
-    char *buff = NULL;
-    size_t len = 0;
-    getline(&buff, &len, fp);
-    my_printf("|%d|\n\n", buff[0]);
-    printf("%zu", len);
-    free(buff);
-    // // * STR
-    // int buff_size = 32000, offset = 0, len = 0;
-    // char *buff = malloc(sizeof(char) * buff_size);
-    // int fp = open(av[1], O_RDONLY);
-    // if (!fp)
-    //     return 1;
-    // my_memset(buff, 100, '\0');
-    // // while ((len = read(fp, buff + offset, buff_size - offset)) > 0) {
-    // //     offset += len;
-    // // }
-    // read(fp, buff, 20);
-    fclose(fp);
-    // if (len < 0)
-    //     return 1;
-
-    // my_printf("|%s|\nlen : %d\n", buff, my_strlen(buff));
-    // free(buff);
-
-    // char *str = my_sprintf("le %s %c %d %s.", "chat", 'a', 0, "dents");
-    // my_putstr(str);
-    // free(str);
-
-
-
+    char *str = filepath_to_str(av[1]);
+    for (int i = 0; i < MEM_SIZE; i++) {
+        if (str[i]) {
+            char *binary = char_to_bin_str(str[i]);
+            char *hexa = my_int_to_base(my_base_to_int(binary, 2), 16);
+            my_printf("%s ", hexa);
+            free(binary);
+            char *base = my_int_to_base(my_abs((int)str[i]), 16);
+        }
+    }
     // my_putstr("The player NB_OF_PLAYER(NAME_OF_PLAYER)is alive.\n");
     // my_putstr("The player NB_OF_PLAYER(NAME_OF_PLAYER)has won.");
     // my_printf("REG_NUMBER : %d\n", REG_NUMBER);
