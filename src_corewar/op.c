@@ -8,6 +8,7 @@
 ** Last update Tue Mar 22 16:44:20 2011 Astek
 */
 
+#include "my.h"
 #include "op.h"
 
 // Le nombre de cycles de chaque instruction
@@ -48,3 +49,13 @@ op_t op_tab[] = {
     {"aff", 1, {T_REG}, 16, 2, "aff"},
     {0, 0, {0}, 0, 0, 0}
 };
+
+// void find_commandes (char *str)
+// {
+//     for (int i = 0; str[i]; i++) {
+//         if (str[i] > 0 && str[i] <= 0x10) {
+//             op_t val = op_tab[str[i] -  1];
+//             my_printf("command : %d = %s\n", str[i], val.mnemonique);
+//         }
+//     }
+// }

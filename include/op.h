@@ -64,7 +64,7 @@ typedef struct op_s     op_t;
 */
 # define IND_SIZE        2
 # define DIR_SIZE        4
-# define REG_SIZE        DIR_SIZE
+# define REG_SIZE        1 //DIR_SIZE
 
 /*
 ** op_tab
@@ -77,10 +77,10 @@ extern  op_t    op_tab[];
 # define PROG_NAME_LENGTH        128
 # define COMMENT_LENGTH          2048
 
-struct header_s
-{
-   int  magic;
 # define COREWAR_EXEC_MAGIC      0xea83f3        /* why not */
+
+struct header_s {
+   int  magic;
    char prog_name[PROG_NAME_LENGTH + 1];
    int  prog_size;
    char comment[COMMENT_LENGTH + 1];

@@ -19,7 +19,6 @@ char *filepath_to_str (char *filepath, int *size_str)
     while ((len = read(fp, buff + (*size_str), buff_size - (*size_str))) > 0)
         (*size_str) += len;
     close(fp);
-    my_printf("la len : %d\t (*size_str) %d\n", len, (*size_str));
     if (len < 0)
         return NULL;
     return buff;
@@ -63,10 +62,7 @@ char *str_but_shorter (char *src, int size)
 {
     char *str = malloc(sizeof(char));
     str[0] = '\0';
-    int a = 0;
     for (int i = 0; i < size - 1; i++) {
-        if (!(a++ % 100))
-            my_printf("a : %d ok ?\n", a);
         if (src[i])
             str = str_plus_one(str, src[i]);
     }
