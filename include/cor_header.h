@@ -21,7 +21,7 @@ int help (void);
 
 // openfile
 
-char *filepath_to_str (char *filepath, int *size_str);
+unsigned char *filepath_to_str (char *filepath, int *size_str);
 
 char *str_but_shorter (char *src, int size);
 
@@ -29,7 +29,7 @@ char *str_but_shorter (char *src, int size);
 
 char **file_cor_to_array(char *filepath);
 
-void disp_str_to_hexa (char *str, int size);
+void disp_str_to_hexa (unsigned char *str, int size);
 
 // virtual machine
 

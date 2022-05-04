@@ -9,10 +9,10 @@
 #include "my.h"
 #include "cor_header.h"
 
-char *filepath_to_str (char *filepath, int *size_str)
+unsigned char *filepath_to_str (char *filepath, int *size_str)
 {
     int buff_size = MEM_SIZE, len = 0;
-    char *buff = malloc(sizeof(char) * buff_size);
+    unsigned char *buff = malloc(sizeof(char) * buff_size);
     int fp = open(filepath, O_RDONLY);
     if (!fp)
         return NULL;

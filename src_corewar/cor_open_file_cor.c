@@ -43,7 +43,7 @@ char **copy_array_plus_one (char **src, char *one)
 char **file_cor_to_array(char *filepath)
 {
     int size = 0;
-    char *str = filepath_to_str(filepath, &size);
+    unsigned char *str = filepath_to_str(filepath, &size);
     if (!str)
         return NULL;
     char **array = malloc(sizeof(char *));
@@ -59,7 +59,7 @@ char **file_cor_to_array(char *filepath)
     return array;
 }
 
-void disp_str_to_hexa (char *str, int size)
+void disp_str_to_hexa (unsigned char *str, int size)
 {
     if (!str)
         return;
