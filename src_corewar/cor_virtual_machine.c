@@ -20,74 +20,21 @@
 // struct a {
 //     unsigned var : 7;
 //     unsigned vari : 32;
-    // int vari;
+//     int vari;
 // };
 
-int modify_bit_n_in_int (int nmb, int where, bool bit)
+command_s *new_command (command_s *old, int fun)
 {
-    if (bit)
-        return nmb | (1u << where);
-    return nmb ^ (1u << where);
+    command_s *new = malloc(sizeof(command_s));
+    new->function = fun;
+    new->next = old;
+    return new;
 }
 
-void print_char_bits (unsigned char c){
-    unsigned char left = 1 << 7;
-    for (char i = 0; i < 8; i++){
-        my_putchar((c & left) ? '1' : '0');
-        c <<= 1;
-    }
-}
-
-void print_int_bits (unsigned int num){
-    unsigned int left = 1 << 31;
-    for (int i = 0; i < 32; i++){
-        if (!(i % 8) && i > 0)
-            my_putchar(' ');
-        my_putchar((num & left) ? '1' : '0');
-        num <<= 1;
-    }
-}
-
-unsigned int char_nmb_to_int (unsigned char *str, int size)
+void life (prog_t *prog)
 {
-    unsigned int elem = 0;
-    int index_str = size - 1;
-    for (int i = 0; i < (8 * size); i++) {
-        if (!(i % 8) && i > 0)
-            index_str--;
-        if (str[index_str] & 1)
-            elem = modify_bit_n_in_int(elem, i, 1);
-        str[index_str] >>= 1;
-    }
-    return elem;
-}
-// my_printf("\non concat 4 char en 1 int :\n");
-// my_printf("les bits des chars :\n");
-// for (int i = 0; i < 4; i++) {
-//     print_char_bits(str[i]);
-//     my_printf("\n");
-// }
-// elem |= (1u << 5);  // bit i de elem = 1
-// my_printf("les bits du int :\n");
-// print_int_bits(elem);
-    // for (int c = 0; c < 4; c++) {
-    //     if (str[c] & 1)
-    //         elem |= (1u << i);  // bit i de elem = 1
-    // }
-    // elem = (str[i] & 1) ? '1' : '0';
-    // param <<= 1;
-// }
-
-void life (unsigned char *str, int index)
-{
-    // my_putchar('\n');
-    // for (int i = 0; i < 4; i++) {
-    //     print_char_bits(str[index + i]);
-    //     my_putchar(' ');
-    // }
-    int nmb_player = char_nmb_to_int(str + index, 4);
-    // print_int_bits(nmb_player);
-    my_printf("\nThe player %d(NAME_OF_PLAYER)is alive.\n", nmb_player);
+    int nmb_player = char_nmb_to_int(prog->binaire + prog->index, 4);
+    my_printf("\nThe player %d(%s)is alive.\n", nmb_player, prog->prog_name);
 }
 
 char return_type_char (char *type)
@@ -118,26 +65,29 @@ char *type_param_to_str (unsigned char param)
     return all_types;
 }
 
-int recup_params_according_to_str (unsigned char *str, char *params, int *arr_args, int nmb_funct)
+void recup_params_according_to_str (prog_t *prog)
 {
+    unsigned char *str = prog->binaire + prog->index;
     int index = 0, index_arr = 1;
-    for (int i = 0; params[i]; i++) {
-        my_printf("\non trouve arg %c -> %d\n", params[i], (unsigned int)str[index]);
+    for (int i = 0; prog->commandes->parametres_type[i]; i++) {
+        my_printf("\non trouve arg %c -> %d\n", prog->commandes->parametres_type[i], (unsigned int)str[index]);
         my_printf("index : %d\n", index);
-        if (params[i] == 'r') {
-            arr_args[index_arr++] = (int)str[index];
+        if (prog->commandes->parametres_type[i] == 'r') {
+            prog->commandes->params[index_arr++] = (int)str[index];
             index += 1;
         }
-        if (params[i] == 'd' && nmb_funct != 10 && nmb_funct != 11) {
-            arr_args[index_arr++] = char_nmb_to_int(str + index, 4);    // juste pour index, mettre 4
+        if (prog->commandes->parametres_type[i] == 'd' &&
+        prog->commandes->function != 10 && prog->commandes->function != 11) {
+            prog->commandes->params[index_arr++] = char_nmb_to_int(str + index, 4);
             index += 4;
         }
-        if (params[i] == 'i' || (params[i] == 'd' && (nmb_funct == 10 || nmb_funct == 11))) {
-            arr_args[index_arr++] = char_nmb_to_int(str + index, 2);
+        if (prog->commandes->parametres_type[i] == 'i' ||(prog->commandes->parametres_type[i] == 'd' &&
+        (prog->commandes->function == 10 || prog->commandes->function == 11))) {
+            prog->commandes->params[index_arr++] = char_nmb_to_int(str + index, 2);
             index += 2;
         }
     }
-    return index;
+    prog->index += index;
 }
 
 int how_many_args (char *list_args)
@@ -150,52 +100,109 @@ int how_many_args (char *list_args)
     return size;
 }
 
-void check_all_functions (unsigned char *str, int size)
+void a_special_function (prog_t *prog)
+{
+    // live, zjmp, fork, lfork.
+    if (prog->commandes->function == 0) {
+        life(prog);
+        prog->index += 4;
+        return;
+    }
+    prog->index = 0x0fffffff;
+    if (prog->commandes->function == 9) {
+
+        return;
+    }
+    if (prog->commandes->function == 12) {
+
+        return;
+    } // 15
+
+    return;
+}
+
+void non_special_function (prog_t *prog)
+{
+    prog->commandes->parametres_type = type_param_to_str(prog->binaire[prog->index]);
+    int nmb_args = how_many_args(prog->commandes->parametres_type);
+    prog->commandes->params = malloc(sizeof(int) * (nmb_args + 1));
+    prog->commandes->params[0] = nmb_args;
+    char parameter_type = prog->binaire[prog->index];
+    if (!parameter_type) {
+        prog->index = 0x0fffffff;
+        return;
+    }
+    // prog->commandes->function
+    my_printf("on a à la fin `%s` car %d\n", prog->commandes->parametres_type, prog->binaire[prog->index]);
+    prog->index++;
+    recup_params_according_to_str(prog);
+    my_printf("nmb prog->commandes->params : %d\n", prog->commandes->params[0]);
+    for (int index_arr = 1; index_arr <= prog->commandes->params[0]; index_arr++) {
+        my_printf("arg %d = %d\n", index_arr, prog->commandes->params[index_arr]);
+    }
+}
+
+void check_all_functions (prog_t *prog)
 {
     int index;
-    for (index = 0; str[index] > 0x10 || str[index] < 1 && index < size; index++);
-    while (index < size) {
-        int nmb_funct = str[index] -  1;
-        op_t val = op_tab[nmb_funct];
-        my_printf("\nfirst command : `%s` car %d\n", val.mnemonique, str[index]);
-        index++;
-        if (nmb_funct == 0) {
-            life(str, index);
-            index += 4;
-            my_printf("index %d ? size %d\n", index, size);
-            // return;
+    for (prog->index = 0; prog->binaire[prog->index] > 0x10 ||
+    prog->binaire[prog->index] < 1 &&
+    prog->index < prog->size_binaire; prog->index++);
+    // prog->index++;
+    while (prog->index < prog->size_binaire) {
+        int fun_actual = prog->binaire[prog->index] - 1;
+        prog->commandes = new_command(prog->commandes, fun_actual);
+        // prog->fun_actual = prog->binaire[prog->index] - 1;
+        op_t val = op_tab[fun_actual];
+        my_printf("\ncommand : `%s` car %d\n", val.mnemonique, fun_actual);
+        prog->index++;
+        if (fun_actual == 0 || fun_actual == 8
+        || fun_actual == 11 || fun_actual == 14) {
+            a_special_function(prog);
         } else {
-            char *params_types_str = type_param_to_str(str[index]);
-            int nmb_args = how_many_args(params_types_str);
-            int *args = malloc(sizeof(int) * (nmb_args + 1));
-            args[0] = nmb_args;
-            char parameter_type = str[index];
-            if (!parameter_type)
-                return;
-            my_printf("on a à la fin `%s` car %d\n", params_types_str, str[index]);
-            index++;
-            index += recup_params_according_to_str(str + index, params_types_str, args, nmb_funct);
-            my_printf("nmb args : %d\n", args[0]);
-            for (int index_arr = 1; index_arr <= args[0]; index_arr++) {
-                my_printf("arg %d = %d\n", index_arr, args[index_arr]);
-            }
-            my_printf("END\n");
-            free(args);
+            non_special_function(prog);
         }
-        // return;
-        // struct params_s param;
-        // my_printf("parameter type :", val.mnemonique, index);
-        // x |= (1u << 3); // 4e bit = 1
-        // for (int k = 7; k >= 0; k--) {
-        //     // my_printf("%c", (parameter_type & 1) + '0');
-        //     types[k] = (parameter_type & 1) + '0';
-        //     parameter_type >>= 1;
-        //     // if (k == 3)
-        //     //     my_putchar(' ');
-        // }
-        // types[8] = '\0';
-        // my_printf("parameter type : %s\n", types);
     }
+}
+
+bool compare_bit (unsigned a, unsigned b, int size)
+{
+    for (int i = 0; i < size; i++) {
+        if ((a & 1) != (b & 1))
+            return 0;
+        a <<= 1;
+        b <<= 1;
+    }
+    return 1;
+}
+
+bool check_magic (unsigned char *str, int size, char **name)
+{
+    for (int i = 0; i < size; i++) {
+        if (compare_bit(str[i], 0xea83f3, 3 * 8)) {
+            int size_name = my_strlen((char *)str + i + 3);
+            (*name) = malloc(sizeof(char) * (size_name + 1));
+            (*name)[size_name] = '\0';
+            my_strcpy((*name), (char *)str + i + 2);
+            return 1;
+        }
+    }
+    return 0;
+}
+
+void free_prog(prog_t *prog)
+{
+    free(prog->binaire);
+    free(prog->prog_name);
+    command_s *head = prog->commandes;
+    while (head) {
+        command_s *tmp = head;
+        head = head->next;
+        free(tmp->parametres_type);
+        free(tmp->params);
+        free(tmp);
+    }
+    free(prog);
 }
 
 int virtual_machine (char *filepath)
@@ -205,10 +212,19 @@ int virtual_machine (char *filepath)
     if (!str)
         return 84;
     disp_str_to_hexa(str, size);
-    check_all_functions(str, size);
+    char *name = NULL;
+    if (!check_magic(str, size, &name))
+        return 0;
+    my_printf("name prog %s\n", name);
+    prog_t *programme = malloc(sizeof(prog_t));
+    programme->prog_name = name;
+    programme->binaire = str;
+    programme->size_binaire = size;
+    programme->commandes = NULL;
+    check_all_functions(programme);
     my_printf("quit VM\n");
+    free_prog(programme);
     // char *shorter = str_but_shorter(str, size);
-    free(str);
     return 0;
 }
 // my_putstr("\nen hexa :\n");
