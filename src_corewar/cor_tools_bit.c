@@ -52,3 +52,14 @@ unsigned int char_nmb_to_int (unsigned char *str, int size)
     }
     return elem;
 }
+
+bool compare_bit (unsigned a, unsigned b, int size)
+{
+    for (int i = 0; i < size; i++) {
+        if ((a & 1) != (b & 1))
+            return 0;
+        a <<= 1;
+        b <<= 1;
+    }
+    return 1;
+}

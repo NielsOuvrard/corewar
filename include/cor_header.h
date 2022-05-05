@@ -32,6 +32,10 @@ typedef struct prog_t {
     command_s *commandes;
 } prog_t;
 
+// free
+
+void free_prog (prog_t *prog);
+
 // help
 
 int help (void);
@@ -58,6 +62,19 @@ void print_int_bits (unsigned int num);
 
 unsigned int char_nmb_to_int (unsigned char *str, int size);
 
+bool compare_bit (unsigned a, unsigned b, int size);
+
+// tools bit
+
+command_s *new_command (command_s *old, int fun);
+
+char return_type_char (char *type);
+
+char *type_param_to_str (unsigned char param);
+
+int how_many_args (char *list_args);
+
+bool check_magic (unsigned char *str, int size, char **name);
 
 // virtual machine
 
