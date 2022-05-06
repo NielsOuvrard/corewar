@@ -44,6 +44,7 @@ void recup_params_according_to_str (prog_t *prog)
             index += IND_SIZE;
         }
     }
+    free(prog->commandes->parametres_type);
     prog->index += index;
 }
 

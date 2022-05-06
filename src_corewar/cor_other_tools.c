@@ -90,7 +90,7 @@ bool check_magic (unsigned char *str, int size, char **name)
 {
     for (int i = 0; i < size; i++) {
         if (compare_bit(str[i], 0xea83f3, 3 * 8)) {
-            int size_name = my_strlen((char *)str + i + 3);
+            int size_name = my_strlen((char *)str + i + 2);
             (*name) = malloc(sizeof(char) * (size_name + 1));
             (*name)[size_name] = '\0';
             my_strcpy((*name), (char *)str + i + 2);

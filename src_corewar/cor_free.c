@@ -20,7 +20,6 @@ void free_prog (prog_t *prog)
     while (head) {
         command_s *tmp = head;
         head = head->next;
-        free(tmp->parametres_type);
         free(tmp->params);
         free(tmp);
     }
