@@ -23,6 +23,23 @@
 //     int vari;
 // };
 
+// command_s *new_command (command_s *old, int fun)
+// {
+//     command_s *new = malloc(sizeof(command_s));
+//     new->function = fun;
+//     new->next = NULL;
+//     if (!old)
+//         return new;
+//     my_printf("not null! ");
+//     command_s *begin = old;
+//     while (old && old->next) {
+//         my_printf("next");
+//         old = old->next;
+//     }
+//     old->next = new;
+//     return begin;
+// }
+
 command_s *new_command (command_s *old, int fun)
 {
     command_s *new = malloc(sizeof(command_s));

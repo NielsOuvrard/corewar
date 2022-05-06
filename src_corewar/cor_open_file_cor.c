@@ -65,7 +65,7 @@ void disp_str_to_hexa (unsigned char *str, int size)
         return;
     int b = 0;
     int time_force_print = 0;
-    for (int i = 0; i < size - 1; i++) {
+    for (int i = 0; i < size; i++) {
         if (str[i] || time_force_print) {
             if (str[i]) {
                 char *binary = char_to_bin_str(str[i]);

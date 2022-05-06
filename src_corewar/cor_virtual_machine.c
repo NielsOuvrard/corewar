@@ -12,11 +12,9 @@
 #include <sys/uio.h>
 #include <unistd.h>
 
-
 void life (prog_t *prog)
 {
-    int nmb_player = char_nmb_to_int(prog->binaire + prog->index, 4);
-    my_printf("\nThe player %d(%s)is alive.\n", nmb_player, prog->prog_name);
+    my_printf("\nThe player %d(%s)is alive.\n", prog->commandes->params[1], prog->prog_name);
 }
 
 void recup_params_according_to_str (prog_t *prog)
@@ -24,19 +22,24 @@ void recup_params_according_to_str (prog_t *prog)
     unsigned char *str = prog->binaire + prog->index;
     int index = 0, index_arr = 1;
     for (int i = 0; prog->commandes->parametres_type[i]; i++) {
-        my_printf("\non trouve arg %c -> %d\n", prog->commandes->parametres_type[i], (unsigned int)str[index]);
-        my_printf("index : %d\n", index);
+        // if (prog->commandes->parametres_type[i] != ' ') {
+            // my_printf("\non trouve arg %c -> %d\n", prog->commandes->parametres_type[i], (unsigned int)str[index]);
+            // my_printf("index : %d\t", index);
+        // }
         if (prog->commandes->parametres_type[i] == 'r') {
             prog->commandes->params[index_arr++] = (int)str[index];
+            // my_printf("REG_SIZE\n");
             index += REG_SIZE;
         }
         if (prog->commandes->parametres_type[i] == 'd' &&
-        prog->commandes->function != 10 && prog->commandes->function != 11) {
+        prog->commandes->function != 9 && prog->commandes->function != 10) {
             prog->commandes->params[index_arr++] = char_nmb_to_int(str + index, DIR_SIZE);
+            // my_printf("DIR_SIZE\n");
             index += DIR_SIZE;
         }
-        if (prog->commandes->parametres_type[i] == 'i' ||(prog->commandes->parametres_type[i] == 'd' &&
-        (prog->commandes->function == 10 || prog->commandes->function == 11))) {
+        if (prog->commandes->parametres_type[i] == 'i' || (prog->commandes->parametres_type[i] == 'd' &&
+        (prog->commandes->function == 9 || prog->commandes->function == 10))) {
+            // my_printf("IND_SIZE\n");
             prog->commandes->params[index_arr++] = char_nmb_to_int(str + index, IND_SIZE);
             index += IND_SIZE;
         }
@@ -47,21 +50,33 @@ void recup_params_according_to_str (prog_t *prog)
 void a_special_function (prog_t *prog)
 {
     // live, zjmp, fork, lfork.
+    prog->commandes->params = malloc(sizeof(int) * 2);
+    prog->commandes->params[0] = 1;
     if (prog->commandes->function == 0) {
-        life(prog);
-        prog->index += 4;
+        prog->commandes->params[1] = char_nmb_to_int(prog->binaire + prog->index, DIR_SIZE);
+        // life(prog);
+        prog->index += DIR_SIZE;
         return;
     }
-    prog->index = 0x0fffffff;
-    if (prog->commandes->function == 9) {
-
-        return;
-    }
-    if (prog->commandes->function == 12) {
-
-        return;
-    } // 15
-
+    // prog->index = 0x0fffffff;
+    prog->commandes->params[1] = char_nmb_to_int(prog->binaire + prog->index, IND_SIZE);
+    // my_printf("param en bit : ");
+    // print_int_bits(prog->commandes->params[1]);
+    // my_printf("\n ===\n");
+    // print_char_bits(prog->binaire[prog->index]);
+    // my_printf(" ");
+    // print_char_bits(prog->binaire[prog->index + 1]);
+    // my_printf("\n");
+    prog->index += IND_SIZE;
+    // if (prog->commandes->function == 9) {
+        // 1 index
+        // return;
+    // }
+    // if (prog->commandes->function == 12) {
+        // 1 index
+        // return;
+    // } // 15
+    // 1 index
     return;
 }
 
@@ -76,26 +91,27 @@ void non_special_function (prog_t *prog)
         prog->index = 0x0fffffff;
         return;
     }
-    my_printf("on a à la fin `%s` car %d\n", prog->commandes->parametres_type, prog->binaire[prog->index]);
+    // my_printf("on a à la fin `%s` car %d\n", prog->commandes->parametres_type, prog->binaire[prog->index]);
     prog->index++;
     recup_params_according_to_str(prog);
-    my_printf("nmb prog->commandes->params : %d\n", prog->commandes->params[0]);
-    for (int index_arr = 1; index_arr <= prog->commandes->params[0]; index_arr++) {
-        my_printf("arg %d = %d\n", index_arr, prog->commandes->params[index_arr]);
-    }
+    // my_printf("nmb prog->commandes->params : %d\n", prog->commandes->params[0]);
+    // for (int index_arr = 1; index_arr <= prog->commandes->params[0]; index_arr++) {
+    //     my_printf("arg %d = %d\n", index_arr, prog->commandes->params[index_arr]);
+    // }
 }
 
 void check_all_functions (prog_t *prog)
 {
     int index;
-    for (prog->index = 0; prog->binaire[prog->index] > 0x10 ||
+    // prog->index = COMMENT_LENGTH;
+    for (prog->index = COMMENT_LENGTH; prog->binaire[prog->index] > 0x10 ||
     prog->binaire[prog->index] < 1 &&
     prog->index < prog->size_binaire; prog->index++);
     while (prog->index < prog->size_binaire) {
         int fun_actual = prog->binaire[prog->index] - 1;
         prog->commandes = new_command(prog->commandes, fun_actual);
         op_t val = op_tab[fun_actual];
-        my_printf("\ncommand : `%s` car %d\n", val.mnemonique, fun_actual);
+        my_printf("command : %s\n", val.mnemonique);
         prog->index++;
         if (fun_actual == 0 || fun_actual == 8
         || fun_actual == 11 || fun_actual == 14) {
@@ -106,13 +122,26 @@ void check_all_functions (prog_t *prog)
     }
 }
 
+void disp_alls_commandes (prog_t *prog)
+{
+    command_s *com = prog->commandes;
+    while (com) {
+        op_t val = op_tab[com->function];
+        my_printf("com %s\nargs : ", val.mnemonique);
+        for (int a = 1; a < com->params[0] + 1; a++)
+            my_printf("'%d' ", com->params[a]);
+        my_printf("\ncycles : %d\n\n", val.nbr_cycles);
+        com = com->next;
+    }
+}
+
 int virtual_machine (char *filepath)
 {
     int size = 0, first_command;
     unsigned char *str = filepath_to_str(filepath, &size);
     if (!str)
         return 84;
-    disp_str_to_hexa(str, size);
+    // disp_str_to_hexa(str, size);
     char *name = NULL;
     if (!check_magic(str, size, &name))
         return 0;
@@ -123,7 +152,10 @@ int virtual_machine (char *filepath)
     programme->size_binaire = size;
     programme->commandes = NULL;
     check_all_functions(programme);
-    my_printf("quit VM\n");
+
+    disp_alls_commandes(programme);
+
+    my_printf("\nquit VM\n");
     free_prog(programme);
     return 0;
 }
