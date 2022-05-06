@@ -43,6 +43,7 @@ void free_my_head (head_cor *cor)
     while (expl) {
         prog_t *tmp = expl;
         expl = expl->next;
+        free(tmp->prog_name);
         free(tmp);
     }
     free(cor);

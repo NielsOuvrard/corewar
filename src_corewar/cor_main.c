@@ -105,6 +105,7 @@ bool binary_to_mem (int ac, char *filepath, head_cor *cor, int idx)
     decale++);
     my_strvcpy(cor->mem, str + decale, size - decale,
     prog->index);
+    free(str);
     return 1;
 }
 
