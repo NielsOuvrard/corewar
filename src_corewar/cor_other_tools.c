@@ -30,12 +30,9 @@
 //     new->next = NULL;
 //     if (!old)
 //         return new;
-//     my_printf("not null! ");
 //     command_s *begin = old;
-//     while (old && old->next) {
-//         my_printf("next");
+//     while (old && old->next)
 //         old = old->next;
-//     }
 //     old->next = new;
 //     return begin;
 // }

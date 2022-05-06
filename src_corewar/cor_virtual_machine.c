@@ -44,7 +44,7 @@ void recup_params_according_to_str (prog_t *prog)
             index += IND_SIZE;
         }
     }
-    free(prog->commandes->parametres_type);
+    // free(prog->commandes->parametres_type);
     prog->index += index;
 }
 
@@ -112,7 +112,7 @@ void check_all_functions (prog_t *prog)
         int fun_actual = prog->binaire[prog->index] - 1;
         prog->commandes = new_command(prog->commandes, fun_actual);
         op_t val = op_tab[fun_actual];
-        my_printf("command : %s\n", val.mnemonique);
+        // my_printf("command : %s\n", val.mnemonique);
         prog->index++;
         if (fun_actual == 0 || fun_actual == 8
         || fun_actual == 11 || fun_actual == 14) {
@@ -123,29 +123,16 @@ void check_all_functions (prog_t *prog)
     }
 }
 
-void disp_alls_commandes (prog_t *prog)
-{
-    command_s *com = prog->commandes;
-    while (com) {
-        op_t val = op_tab[com->function];
-        my_printf("com %s\nargs : ", val.mnemonique);
-        for (int a = 1; a < com->params[0] + 1; a++)
-            my_printf("'%d' ", com->params[a]);
-        my_printf("\ncycles : %d\n\n", val.nbr_cycles);
-        com = com->next;
-    }
-}
-
-int virtual_machine (char *filepath)
+prog_t *virtual_machine (char *filepath)
 {
     int size = 0, first_command;
     unsigned char *str = filepath_to_str(filepath, &size);
     if (!str)
-        return 84;
+        return NULL;
     // disp_str_to_hexa(str, size);
     char *name = NULL;
     if (!check_magic(str, size, &name))
-        return 0;
+        return NULL;
     my_printf("name prog %s\n", name);
     prog_t *programme = malloc(sizeof(prog_t));
     programme->prog_name = name;
@@ -153,10 +140,9 @@ int virtual_machine (char *filepath)
     programme->size_binaire = size;
     programme->commandes = NULL;
     check_all_functions(programme);
-
-    disp_alls_commandes(programme);
+    // disp_alls_commandes(programme);
 
     my_printf("\nquit VM\n");
-    free_prog(programme);
-    return 0;
+    // free_prog(programme);
+    return programme;
 }

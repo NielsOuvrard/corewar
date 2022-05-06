@@ -28,13 +28,15 @@ typedef struct prog_t {
     unsigned char *binaire;
     int size_binaire;
     int index;
-    // int fun_actual;
     command_s *commandes;
+    struct prog_t *next;
 } prog_t;
 
 // free
 
 void free_prog (prog_t *prog);
+
+void free_alls_progs (prog_t *progs);
 
 // help
 
@@ -78,7 +80,7 @@ bool check_magic (unsigned char *str, int size, char **name);
 
 // virtual machine
 
-int virtual_machine (char *filepath);
+prog_t *virtual_machine (char *filepath);
 
 // op.c
 

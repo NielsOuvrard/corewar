@@ -23,17 +23,76 @@
 // }
 // free_my_arr(file);
 
+
+void disp_alls_commandes (prog_t *prog)
+{
+    command_s *com = prog->commandes;
+    while (com) {
+        op_t val = op_tab[com->function];
+        my_printf("com %s\nargs : ", val.mnemonique);
+        for (int a = 1; a < com->params[0] + 1; a++)
+            my_printf("'%d' ", com->params[a]);
+        my_printf("\ncycles : %d\n\n", val.nbr_cycles);
+        com = com->next;
+    }
+}
+
+
+// command_s *new_command (command_s *old, int fun)
+// {
+//     command_s *new = malloc(sizeof(command_s));
+//     new->function = fun;
+//     new->next = NULL;
+//     if (!old)
+//         return new;
+//     my_printf("not null! ");
+//     command_s *begin = old;
+//     while (old && old->next) {
+//         my_printf("next");
+//         old = old->next;
+//     }
+//     old->next = new;
+//     return begin;
+// }
+
+prog_t *add_prog (prog_t *dest, prog_t *new)
+{
+    prog_t *begin = dest;
+    if (!begin) {
+        new->next = NULL;
+        return new;
+    }
+    while (dest && dest->next)
+        dest = dest->next;
+    dest->next = new;
+    return begin;
+}
+
+
+int open_programs (int ac, char **av)
+{
+    prog_t *list_p = NULL;
+    for (int i = 1; i < ac; i++) {
+        prog_t *prog = virtual_machine(av[i]);
+        my_printf("prog %d : %s\n", i, av[i]);
+        if (!prog)
+            return 84;
+        list_p = add_prog(list_p, prog);
+        my_printf("ok %d\n", i);
+    }
+    free_alls_progs(list_p);
+    // my_putstr("\n\nThe player NB_OF_PLAYER(NAME_OF_PLAYER)is alive.\n");
+    // my_putstr("The player NB_OF_PLAYER(NAME_OF_PLAYER)has won.");
+    // my_printf("REG_NUMBER : %d\n", REG_NUMBER);
+    // my_printf("REG_SIZE : %d\n", REG_SIZE);
+    return 0;
+}
+
 int main (int ac, char **av)
 {
     if (ac > 1 && !my_strvcmp(av[1], "-h"))
         return help();
     if (ac < 2)
         return 1;
-    if (virtual_machine(av[1]) == 84)
-        return 84;
-    my_putstr("\n\nThe player NB_OF_PLAYER(NAME_OF_PLAYER)is alive.\n");
-    // my_putstr("The player NB_OF_PLAYER(NAME_OF_PLAYER)has won.");
-    // my_printf("REG_NUMBER : %d\n", REG_NUMBER);
-    // my_printf("REG_SIZE : %d\n", REG_SIZE);
-    return 0;
+    return open_programs(ac, av);
 }
