@@ -21,7 +21,7 @@ void free_prog (prog_t *prog)
         command_s *tmp = head;
         head = head->next;
         free(tmp->params);
-        // free(tmp->parametres_type);
+        free(tmp->parametres_type);
         free(tmp);
     }
     free(prog);

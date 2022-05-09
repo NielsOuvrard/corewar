@@ -32,6 +32,10 @@ typedef struct prog_t {
     struct prog_t *next;
 } prog_t;
 
+// cycles
+
+int start_cycles (prog_t *prog);
+
 // free
 
 void free_prog (prog_t *prog);
@@ -80,7 +84,7 @@ bool check_magic (unsigned char *str, int size, char **name);
 
 // virtual machine
 
-prog_t *virtual_machine (char *filepath);
+prog_t *open_a_binary (char *filepath);
 
 // op.c
 

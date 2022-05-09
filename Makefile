@@ -26,9 +26,10 @@ all:
 		@make clean
 
 clean:
-		rm -f *.o
-		rm -f *.gcno
-		rm -f *.gcda
+		@echo "compilation : [\033[32mSUCCESS\033[0m]"
+		@rm -f *.o
+		@rm -f *.gcno
+		@rm -f *.gcda
 
 fclean: clean
 		rm -f lib/my/libmy.a

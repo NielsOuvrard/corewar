@@ -27,6 +27,7 @@
 void disp_alls_commandes (prog_t *prog)
 {
     command_s *com = prog->commandes;
+    my_printf("debut des commandes\n");
     while (com) {
         op_t val = op_tab[com->function];
         my_printf("com %s\nargs : ", val.mnemonique);
@@ -35,6 +36,7 @@ void disp_alls_commandes (prog_t *prog)
         my_printf("\ncycles : %d\n\n", val.nbr_cycles);
         com = com->next;
     }
+    my_printf("fin des commandes\n");
 }
 
 
@@ -68,18 +70,19 @@ prog_t *add_prog (prog_t *dest, prog_t *new)
     return begin;
 }
 
-
 int open_programs (int ac, char **av)
 {
     prog_t *list_p = NULL;
     for (int i = 1; i < ac; i++) {
-        prog_t *prog = virtual_machine(av[i]);
+        prog_t *prog = open_a_binary(av[i]);
         my_printf("prog %d : %s\n", i, av[i]);
         if (!prog)
             return 84;
         list_p = add_prog(list_p, prog);
         my_printf("ok %d\n", i);
     }
+    disp_alls_commandes(list_p);
+    start_cycles(list_p);
     free_alls_progs(list_p);
     // my_putstr("\n\nThe player NB_OF_PLAYER(NAME_OF_PLAYER)is alive.\n");
     // my_putstr("The player NB_OF_PLAYER(NAME_OF_PLAYER)has won.");
