@@ -7,39 +7,39 @@
 #pragma once
 
 #ifndef min
-# define min(x, y) ({		\
-	__typeof__(x) _min1 = (x);		\
-	__typeof__(y) _min2 = (y);		\
-	(void) (&_min1 == &_min2);		\
-	_min1 < _min2 ? _min1 : _min2; })
+# define min(x, y) ({        \
+    __typeof__(x) _min1 = (x);        \
+    __typeof__(y) _min2 = (y);        \
+    (void) (&_min1 == &_min2);        \
+    _min1 < _min2 ? _min1 : _min2; })
 #endif
 
 #ifndef max
-# define max(x, y) ({		\
-	__typeof__(x) _max1 = (x);		\
-	__typeof__(y) _max2 = (y);		\
-	(void) (&_max1 == &_max2);		\
-	_max1 > _max2 ? _max1 : _max2; })
+# define max(x, y) ({        \
+    __typeof__(x) _max1 = (x);        \
+    __typeof__(y) _max2 = (y);        \
+    (void) (&_max1 == &_max2);        \
+    _max1 > _max2 ? _max1 : _max2; })
 #endif
 
 #ifndef abs_diff
 # define abs_diff(x, y) ({ \
-	__typeof__(x) _a = (x);			\
-	__typeof__(y) _b = (y);			\
-	(void) (&_a == &_b);			\
-	_a > _b ? _a - _b : _b - _a; })
+    __typeof__(x) _a = (x);            \
+    __typeof__(y) _b = (y);            \
+    (void) (&_a == &_b);            \
+    _a > _b ? _a - _b : _b - _a; })
 #endif
 
 #ifndef pair
 # define pair(x) ({ \
-	__typeof__(x) _a = (x);			\
-	(_a % 2 == 0) ? 1 : 0; })
+    __typeof__(x) _a = (x);            \
+    (_a % 2 == 0) ? 1 : 0; })
 #endif
 
 #ifndef my_abs
 # define my_abs(x) ({ \
-	__typeof__(x) _a = (x);			\
-	_a > 0 ? _a : -_a; })
+    __typeof__(x) _a = (x);            \
+    _a > 0 ? _a : -_a; })
 #endif
 
 #define CTOI(x) ((x) - '0')

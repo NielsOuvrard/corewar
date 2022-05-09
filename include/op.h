@@ -58,16 +58,9 @@ typedef struct op_s op_t;
 /*
 ** size (in bytes)
 */
-<<<<<<< HEAD
 # define IND_SIZE        2
 # define DIR_SIZE        4
 # define REG_SIZE        DIR_SIZE
-=======
-#define IND_SIZE 2
-#define DIR_SIZE 4
-//DIR_SIZE
-#define REG_SIZE 1
->>>>>>> de3f2a4d820e4f3731610f88bf86b641e4ac1072
 
 /*
 ** op_tab
