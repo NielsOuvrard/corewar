@@ -25,18 +25,26 @@ typedef struct command_s {
 
 typedef struct prog_t {
     char *prog_name;
-    unsigned char *binaire;
-    int size_binaire;
+    // unsigned char *binaire;
+    // int size_binaire;
     int index;
-    command_s *commandes;
+    int cycle_to_wait;
+    // command_s *commandes;
     struct prog_t *next;
 } prog_t;
+
+typedef struct head_cor {
+    unsigned char *mem;
+    prog_t *progs;
+} head_cor;
 
 // cycles
 
 int start_cycles (prog_t *prog);
 
 // free
+
+void free_my_head (head_cor *cor);
 
 void free_prog (prog_t *prog);
 
@@ -70,7 +78,9 @@ unsigned int char_nmb_to_int (unsigned char *str, int size);
 
 bool compare_bit (unsigned a, unsigned b, int size);
 
-// tools bit
+// open bin
+
+void find_command_from_here (unsigned char *mem, int *index);
 
 command_s *new_command (command_s *old, int fun);
 

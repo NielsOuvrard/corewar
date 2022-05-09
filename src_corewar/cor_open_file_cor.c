@@ -64,24 +64,23 @@ void disp_str_to_hexa (unsigned char *str, int size)
     if (!str)
         return;
     int b = 0;
-    int time_force_print = 0;
+    int time_force_print = 1;
     for (int i = 0; i < size; i++) {
-        if (str[i] || time_force_print) {
-            if (str[i]) {
-                char *binary = char_to_bin_str(str[i]);
-                char *hexa = my_int_to_base(my_base_to_int(binary, 2), 16);
-                my_putstr(hexa);
-                my_putchar('\t');
-                free(binary);
-                free(hexa);
-                time_force_print = 10;
-            } else {
-                my_putstr("0\t");
-                time_force_print--;
-            }
-            b++;
-            if (!(b % 10))
-                my_putchar('\n');
+        if (str[i]) {
+            my_putstr(MY_COLOR_GREEN);
+            char *binary = char_to_bin_str(str[i]);
+            char *hexa = my_int_to_base(my_base_to_int(binary, 2), 16);
+            if (my_strlen(hexa) < 2)
+                my_putchar('0');
+            my_putstr(hexa);
+            my_putchar(' ');
+            free(binary);
+            free(hexa);
+            my_putstr(MY_COLOR_RESET);
+        } else {
+            my_putstr("00 ");
         }
+        if (++b == 64)
+            my_printf("\n", "\n%d\n", i, b = 0);
     }
 }

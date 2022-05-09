@@ -42,13 +42,15 @@ void print_int_bits (unsigned int num)
 unsigned int char_nmb_to_int (unsigned char *str, int size)
 {
     unsigned int elem = 0;
-    int index_str = size - 1;
+    int index_str = size - 1, decale = 0;
     for (int i = 0; i < (8 * size); i++) {
-        if (!(i % 8) && i > 0)
+        if (!(i % 8) && i > 0) {
+            decale = 0;
             index_str--;
-        if (str[index_str] & 1)
+        }
+        if ((str[index_str] >> decale) & 1)
             elem = modify_bit_n_in_int(elem, i, 1);
-        str[index_str] >>= 1;
+        decale++;
     }
     return elem;
 }

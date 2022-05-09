@@ -64,7 +64,7 @@ typedef struct op_s     op_t;
 */
 # define IND_SIZE        2
 # define DIR_SIZE        4
-# define REG_SIZE        1 //DIR_SIZE
+# define REG_SIZE        DIR_SIZE
 
 /*
 ** op_tab
