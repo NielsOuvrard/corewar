@@ -19,7 +19,6 @@ int start_cycles (prog_t *prog)
         while (expl) {
             op_t val = op_tab[expl->commandes->function];
             if (cycle >= val.nbr_cycles) {
-                
             }
             // op_t val = op_tab[com->function];
             // my_printf("com %s\nargs : ", val.mnemonique);
