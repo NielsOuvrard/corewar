@@ -47,12 +47,14 @@ int open_programs (int ac, char **av)
             return 84;
         }
     }
-    for (int cycle = 0; cycle < 1001; cycle++) {
+    for (int cycle = 0; cycle < 21; cycle++) {
         begin_virtual_machine(cor);
-        if (!(cycle % 100))
-            my_printf("cycle %d\n", cycle);
+        if (!(cycle % 10)) {
+            dump_all(cor);
+            // disp_str_to_hexa(cor->mem, cor->who, MEM_SIZE);
+            my_printf("\n", "cycle %d\n", cycle);
+        }
     }
-    disp_str_to_hexa(cor->mem, MEM_SIZE);
     free_my_head(cor);
     return 0;
 }

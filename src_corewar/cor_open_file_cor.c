@@ -59,28 +59,29 @@ char **file_cor_to_array(char *filepath)
     return array;
 }
 
-void disp_str_to_hexa (unsigned char *str, int size)
+void disp_str_to_hexa (unsigned char *str, char *who, int size)
 {
     if (!str)
         return;
     int b = 0;
     int time_force_print = 1;
     for (int i = 0; i < size; i++) {
-        if (str[i]) {
-            my_putstr(MY_COLOR_GREEN);
-            char *binary = char_to_bin_str(str[i]);
-            char *hexa = my_int_to_base(my_base_to_int(binary, 2), 16);
-            if (my_strlen(hexa) < 2)
-                my_putchar('0');
-            my_putstr(hexa);
-            my_putchar(' ');
-            free(binary);
-            free(hexa);
-            my_putstr(MY_COLOR_RESET);
-        } else {
-            my_putstr("00 ");
-        }
+        my_printf("\033[%dm", 97 - who[i]);
+        // my_printf("\033[%dm", 107 - who[i]);
+        char *binary = char_to_bin_str(str[i]);
+        char *hexa;
+        hexa = my_int_to_base(my_base_to_int(binary, 2), 16);
+        if (my_strlen(hexa) < 2)
+            my_putchar('0');
+        if (my_strlen(hexa) < 1)
+            my_putchar('0');
+        my_putstr(hexa);
+        my_putchar(' ');
+        free(binary);
+        free(hexa);
+        my_putstr(MY_COLOR_RESET);
         if (++b == 64)
             my_printf("\n", "\n%d\n", i, b = 0);
     }
 }
+// ansi color code

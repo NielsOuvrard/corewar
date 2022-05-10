@@ -38,6 +38,8 @@ typedef struct prog_t {
 
 typedef struct head_cor {
     unsigned char *mem;
+    char *who;
+    int nmb_player;
     prog_t *progs;
 } head_cor;
 
@@ -71,6 +73,12 @@ int size, int idx_dest);
 
 bool binary_to_mem (int ac, char *filepath, head_cor *cor, int idx);
 
+// dump all
+
+void dump_all (head_cor *cor);
+
+void print_to_hexa (char c);
+
 // cycles
 
 int start_cycles (prog_t *prog);
@@ -97,7 +105,7 @@ char *str_but_shorter (char *src, int size);
 
 char **file_cor_to_array(char *filepath);
 
-void disp_str_to_hexa (unsigned char *str, int size);
+void disp_str_to_hexa (unsigned char *str, char *who, int size);
 
 // tools bit
 

@@ -31,7 +31,11 @@ head_cor *create_mem (void)
     cor->mem = malloc(sizeof(unsigned char) * MEM_SIZE);
     for (int i = 0; i < MEM_SIZE; i++)
         cor->mem[i] = '\0';
+    cor->who = malloc(sizeof(char) * MEM_SIZE);
+    for (int i = 0; i < MEM_SIZE; i++)
+        cor->who[i] = '\0';
     cor->progs = NULL;
+    cor->nmb_player = 1;
     return cor;
 }
 
@@ -47,6 +51,7 @@ bool binary_to_mem (int ac, char *filepath, head_cor *cor, int idx)
     prog_t *prog = open_a_binary(filepath);
     if (!prog)
         return 0;
+    prog->nmb_player = cor->nmb_player++;
     prog->registres = malloc(sizeof(int) * REG_NUMBER);
     for (int i = 0; i < REG_NUMBER; i++)
         prog->registres[i] = 0;
@@ -61,6 +66,8 @@ bool binary_to_mem (int ac, char *filepath, head_cor *cor, int idx)
     str[decale] > 0x10 || str[decale] < 1 && decale < size; decale++);
     my_strvcpy(cor->mem, str + decale, size - decale, prog->registres[0]);
     free(str);
+    for (int i = 0; i < size - decale; i++)
+        cor->who[prog->registres[0] + i] = prog->nmb_player;
     op_t val = op_tab[cor->mem[prog->registres[0]] - 1];
     prog->cycle_to_wait =  val.nbr_cycles;
     return 1;

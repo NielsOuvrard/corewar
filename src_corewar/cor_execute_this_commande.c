@@ -94,11 +94,12 @@ void execute_this_commande (head_cor *cor, prog_t *prog)
         (prog->registres[0])++;
         return;
     }
+    if (cor->who[prog->registres[0]] != 0 && cor->who[prog->registres[0]] != prog->nmb_player)
+        return; // destroy prog
     int funct = cor->mem[(prog->registres[0])] - 1;
     command_s *com = malloc(sizeof(command_s));
     com->function = funct;
     com->next_fun = 1;
-    // (prog->registres[0])++;
     op_t val = op_tab[funct];
     if (funct == 0 || funct == 8 || funct == 11 || funct == 14) {
         a_special_function(cor, prog, com);
