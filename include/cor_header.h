@@ -20,16 +20,19 @@ typedef struct command_s {
     char *parametres_type;
     int *params;
     int size_cycle;
-    struct command_s *next;
+    int next_fun;
+    // struct command_s *next;
 } command_s;
 
 typedef struct prog_t {
     char *prog_name;
-    // unsigned char *binaire;
-    // int size_binaire;
+    int nmb_player;
+    int *registres;
+    // 16 reg differents, le 1e = num du joueur
+    // reg PC = index
+    int carry;
     int index;
     int cycle_to_wait;
-    // command_s *commandes;
     struct prog_t *next;
 } prog_t;
 
@@ -37,6 +40,36 @@ typedef struct head_cor {
     unsigned char *mem;
     prog_t *progs;
 } head_cor;
+
+// commandes
+
+int fun_live    (head_cor *cor, prog_t *prog, command_s *com);
+int fun_ld      (head_cor *cor, prog_t *prog, command_s *com);
+int fun_st      (head_cor *cor, prog_t *prog, command_s *com);
+int fun_add     (head_cor *cor, prog_t *prog, command_s *com);
+int fun_sub     (head_cor *cor, prog_t *prog, command_s *com);
+int fun_and     (head_cor *cor, prog_t *prog, command_s *com);
+int fun_or      (head_cor *cor, prog_t *prog, command_s *com);
+int fun_xor     (head_cor *cor, prog_t *prog, command_s *com);
+int fun_zjmp    (head_cor *cor, prog_t *prog, command_s *com);
+int fun_ldi     (head_cor *cor, prog_t *prog, command_s *com);
+int fun_sti     (head_cor *cor, prog_t *prog, command_s *com);
+int fun_fork    (head_cor *cor, prog_t *prog, command_s *com);
+int fun_lld     (head_cor *cor, prog_t *prog, command_s *com);
+int fun_lldi    (head_cor *cor, prog_t *prog, command_s *com);
+int fun_lfork   (head_cor *cor, prog_t *prog, command_s *com);
+int fun_aff     (head_cor *cor, prog_t *prog, command_s *com);
+
+// create VM
+
+prog_t *add_prog (prog_t *dest, prog_t *new);
+
+head_cor *create_mem (void);
+
+void my_strvcpy (unsigned char *dest, unsigned char *src,
+int size, int idx_dest);
+
+bool binary_to_mem (int ac, char *filepath, head_cor *cor, int idx);
 
 // cycles
 
@@ -78,11 +111,9 @@ unsigned int char_nmb_to_int (unsigned char *str, int size);
 
 bool compare_bit (unsigned a, unsigned b, int size);
 
-// open bin
+// execute_this_commande
 
-void find_command_from_here (unsigned char *mem, int *index);
-
-command_s *new_command (command_s *old, int fun);
+void execute_this_commande (head_cor *cor, prog_t *prog);
 
 char return_type_char (char *type);
 

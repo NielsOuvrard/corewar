@@ -23,19 +23,6 @@
 //     int vari;
 // };
 
-command_s *new_command (command_s *old, int fun)
-{
-    command_s *new = malloc(sizeof(command_s));
-    new->function = fun;
-    new->next = NULL;
-    if (!old)
-        return new;
-    while (old && old->next)
-        old = old->next;
-    old->next = new;
-    return new;
-}
-
 char return_type_char (char *type)
 {
     if (type[0] == '0' && type[1] == '1')

@@ -24,29 +24,6 @@ unsigned char *filepath_to_str (char *filepath, int *size_str)
     return buff;
 }
 
-// char **filepath_to_arr (char *filepath)
-// {
-//     char *buff = filepath_to_str(filepath);
-//     if (!buff)
-//         return NULL;
-//     int offset, a = 0, k, i, j = 0;
-//     offset = my_strlen(buff);
-//     for (int kfc = 0; buff[kfc] != '\0'; kfc++)
-//         if (buff[kfc] == '\n')
-//             a++;
-//     char **map = malloc(sizeof(char *) * (a + 2));
-//     for (i = 0; a > i; i++) {
-//         map[i] = malloc(sizeof(char) * (offset));
-//         for (k = 0; buff[j] != '\n'; k++)
-//             map[i][k] = buff[j++];
-//         j++;
-//         map[i][k] = '\0';
-//     }
-//     map[a] = NULL;
-//     free(buff);
-//     return map;
-// }
-
 char *str_plus_one (char *src, char c)
 {
     int size = my_strlen(src);
@@ -57,14 +34,3 @@ char *str_plus_one (char *src, char c)
     free(src);
     return dest;
 }
-
-// char *str_but_shorter (char *src, int size)
-// {
-//     char *str = malloc(sizeof(char));
-//     str[0] = '\0';
-//     for (int i = 0; i < size - 1; i++) {
-//         if (src[i])
-//             str = str_plus_one(str, src[i]);
-//     }
-//     return str;
-// }
