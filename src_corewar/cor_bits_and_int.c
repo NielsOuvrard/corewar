@@ -38,11 +38,3 @@ void modify_str_with_bits (unsigned char *str, int bits)
     str[1] = last_octet_int_to_char(bits >>= 8);
     str[0] = last_octet_int_to_char(bits >>= 8);
 }
-
-// int some
-
-
-// int binary_pos_to_neg (int a)
-// {
-//     int neg = 
-// }
