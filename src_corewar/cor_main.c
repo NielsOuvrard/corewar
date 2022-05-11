@@ -31,6 +31,7 @@ void begin_virtual_machine (head_cor *cor)
             execute_this_commande(cor, expl);
             expl->cycle_to_wait = how_many_cycles_for_next(cor->mem, expl->registres[0]);
             // my_printf("cycle to wait : %d\n", expl->cycle_to_wait);
+            dump_all(cor);
         }
         expl = expl->next;
     }
@@ -47,13 +48,13 @@ int open_programs (int ac, char **av)
             return 84;
         }
     }
-    for (int cycle = 0; cycle < 21; cycle++) {
+    dump_all(cor);
+    for (int cycle = 0; cycle < 62; cycle++) {
         begin_virtual_machine(cor);
-        if (!(cycle % 10)) {
-            dump_all(cor);
+        // if (!(cycle % 300)) {
             // disp_str_to_hexa(cor->mem, cor->who, MEM_SIZE);
-            my_printf("\n", "cycle %d\n", cycle);
-        }
+            // my_printf("\n", "cycle %d\n", cycle);
+        // }
     }
     free_my_head(cor);
     return 0;

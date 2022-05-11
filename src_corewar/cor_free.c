@@ -15,6 +15,7 @@
 void free_my_head (head_cor *cor)
 {
     free(cor->mem);
+    free(cor->who);
     prog_t *expl = cor->progs;
     while (expl) {
         prog_t *tmp = expl;

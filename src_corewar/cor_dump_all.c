@@ -90,17 +90,18 @@ void dump_all (head_cor *cor)
         my_putstr(MY_COLOR_RESET);
         my_putchar(' ');
         if (++b == 64)
-            my_printf("\n", "\n%d\n", i, b = 0);
+            my_printf("\n", b = 0);
     }
     prog_t *expl = cor->progs;
     while (expl) {
-        my_printf("\033[%dmProg %d -> registeres :\n", 97 - expl->nmb_player, expl->index);
+        my_printf("\033[%dmProg %d -> registeres :\n", 97 - expl->nmb_player, expl->nmb_player);
         for (int i = 0; i < REG_NUMBER; i++) {
-            my_printf("r%d\t", i);
+            my_printf("r%d\t", i + 1);
             print_int_bits(expl->registres[i]);
             my_printf("\t->\t%d\n", expl->registres[i]);
         }
         my_putchar('\n');
         expl = expl->next;
     }
+    my_putstr(MY_COLOR_RESET);
 }

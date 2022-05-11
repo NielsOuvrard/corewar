@@ -107,6 +107,10 @@ char **file_cor_to_array(char *filepath);
 
 void disp_str_to_hexa (unsigned char *str, char *who, int size);
 
+// other tools
+
+void modify_str_with_bits (unsigned char *str, int bits);
+
 // tools bit
 
 int modify_bit_n_in_int (int nmb, int where, bool bit);
