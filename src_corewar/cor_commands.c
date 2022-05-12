@@ -12,6 +12,19 @@
 #include <sys/uio.h>
 #include <unistd.h>
 
+
+// live;           
+// ld;             ok
+// ...
+// zjmp;           ok
+// ldi;            
+// sti;            
+// fork;           
+// lld;            
+// lldi;           
+// lfork;          
+// aff;            
+
 int fun_live    (head_cor *cor, prog_t *prog, command_s *com)
 {
     my_printf("The player %d (%s)is alive.\n",
@@ -20,126 +33,74 @@ int fun_live    (head_cor *cor, prog_t *prog, command_s *com)
     return 0;
 }
 
+// ind / dir , reg
+// ld 34,r3 loads the REG_SIZE bytes starting at the address PC + 34 % IDX_MOD into r3.
 int fun_ld      (head_cor *cor, prog_t *prog, command_s *com)
 {
-    int index = prog->registres[0] + (com->params[1] % IDX_MOD);
-    unsigned int value = char_nmb_to_int(cor->mem + index, REG_SIZE);
-    my_printf("ld : On met %d dans r%d\n", value, com->params[2]);
-    prog->registres[com->params[2] - 1] = value;
-    // * This operation modifies the carry.
-    prog->carry = 1; // pourquoi pas
-    // prog->registres[com->params[2]] = com->params[1];
-    // valeure de param 1 dans param 2
-    // ld 34,r3 loads the REG_SIZE bytes starting at the address PC + 34 % IDX_MOD into r3.
-    // com->parametres_type;
-    // com->params;
+    int final_value;
+    if (com->parametres_type[1] == 'i') {
+        unsigned int value;
+        value = char_nmb_to_int(cor->mem + prog->registres[0] + (com->params[1] % IDX_MOD), REG_SIZE);
+        if (value >= 0x80000000)
+            final_value = ( - (~(value)) - 1);
+        else
+            final_value = value;
+    } else if (com->parametres_type[1] == 'd') {
+        final_value = com->params[1];
+    } else {
+        return prog->carry = 0;
+    }
+    my_printf("ld : On met %d dans r%d\n", final_value, com->params[2]);
+    prog->registres[com->params[2] - 1] = final_value;
+    prog->carry = 1;
     return 0;
 }
 
+// reg , reg / dir
+// copy registres[params[1]] into param[2] (reg / ind)
 int fun_st      (head_cor *cor, prog_t *prog, command_s *com)
 {
     // diffère selon les arguments...
-    // reg , reg / dir
     // takes 2 parameters. It stores the first parameter’s value (which is a register) into
     // the second (whether a register or a number).
-
-    if (!my_strcmp(com->parametres_type, "rr")) {
+    if (com->parametres_type[2] == 'r') {
         prog->registres[com->params[2] - 1] = prog->registres[com->params[1] - 1];
-    } else if (!my_strcmp(com->parametres_type, "rd")) { // ? or ri
-        prog->registres[com->params[2] - 1] = char_nmb_to_int(
-        cor->mem + (prog->registres[0] + (com->params[1] % IDX_MOD)), REG_SIZE);
+    } else if (com->parametres_type[2] == 'i') { // ? or ri
+        unsigned short value = com->params[2];
+        short final_value;
+        if (value >= 0x8000)
+            final_value = ( - (~(value)) - 1);
+        else
+            final_value = value;
+        final_value %= IDX_MOD;
+        modify_str_with_bits(cor->mem + (prog->registres[0] + (final_value)), prog->registres[com->params[1] - 1]);
+    } else {
+        return 0;
     }
-    // param 2 = r[param 1];
-    // modify_str_with_bits(cor->mem + )
     // et modifier le who
     // st r4,34 stores the content of r4 at the address PC + 34 % IDX_MOD.
-    modify_str_with_bits(cor->mem + (prog->registres[0] + (com->params[2] % IDX_MOD)), prog->registres[com->params[1] - 1]);
     // st r3,r8 copies the content of r3 into r8.
-    return 0;
-}
-
-int fun_add     (head_cor *cor, prog_t *prog, command_s *com)
-{
-    if (my_strcmp(com->parametres_type, "rrr") && my_strcmp(com->parametres_type, " rrr"))
-        return 1;
-    prog->registres[com->params[3] - 1] = prog->registres[com->params[1] - 1] + prog->registres[com->params[2] - 1];
-    // takes 3 registers as parameters. It adds the content of the first two and puts the sum
-    // into the third one (which must be a register).
-    // * This operation modifies the carry.
-    prog->carry = 1; // pourquoi pas
-    // add r2,r3,r5addsthecontentofr2andr3andputstheresultintor5.
-    return 0;
-}
-
-int fun_sub     (head_cor *cor, prog_t *prog, command_s *com)
-{
-    if (my_strcmp(com->parametres_type, "rrr") && my_strcmp(com->parametres_type, " rrr"))
-        return 1;
-    prog->registres[com->params[3] - 1] = prog->registres[com->params[1] - 1] - prog->registres[com->params[2] - 1];
-    // Similar to add, but performing a subtraction.
-    // takes 3 parameters. It performs a binary AND between the first two parameters
-    // and stores the result into the third one (which must be a register).
-    // * This operation modifies the carry.
-    prog->carry = 1; // pourquoi pas
-    // and r2, %0,r3 puts r2 & 0 into r3.
-    return 0;
-}
-
-int fun_and     (head_cor *cor, prog_t *prog, command_s *com)
-{
-    if (my_strcmp(com->parametres_type, "rrr") && my_strcmp(com->parametres_type, " rrr"))
-        return 1;
-    prog->registres[com->params[3] - 1] = prog->registres[com->params[1] - 1] & prog->registres[com->params[2] - 1];        // vraiment ça ?
-    return 0;
-}
-
-int fun_or      (head_cor *cor, prog_t *prog, command_s *com)
-{
-    if (my_strcmp(com->parametres_type, "rrr") && my_strcmp(com->parametres_type, " rrr"))
-        return 1;
-    prog->registres[com->params[3] - 1] = prog->registres[com->params[1] - 1] | prog->registres[com->params[2] - 1];
-    return 0;
-}
-
-int fun_xor     (head_cor *cor, prog_t *prog, command_s *com)
-{
-    if (my_strcmp(com->parametres_type, "rrr") && my_strcmp(com->parametres_type, " rrr"))
-        return 1;
-    prog->registres[com->params[3] - 1] = prog->registres[com->params[1] - 1] ^ prog->registres[com->params[2] - 1];
     return 0;
 }
 
 int fun_zjmp    (head_cor *cor, prog_t *prog, command_s *com)
 {
-    // if (my_strcmp(com->parametres_type, "i") || !prog->carry)   // check param type au deuxime duo de bit
-    //     return 1;
-
-    // if carry == 1, jump to this
-
-
-    // nombres neg
+    if (!prog->carry)
+        return com->next_fun = 3;
     short move;
-    my_printf("\n");
     if (com->params[1] >= 0x8000) {
-        my_printf("neg");
         move = ( - (~(short)(com->params[1])) - 1) % IDX_MOD;
     } else {
         move = (short)(com->params[1] % IDX_MOD);
     }
-    my_printf("on bouge de %d\n", move);
-    my_printf("prog de reg O = %d\n", prog->registres[0]);
     prog->registres[0] += move;
-    my_printf("prog de reg O = %d\n", prog->registres[0]);
     com->next_fun = 0;
-    // It jumps to this index if the carry is worth 1.
-    // Other wise, it does nothing but consumes the same time.
-    // zjmp %23 puts,if carry equals 1, PC + 23 % IDX_MOD in to the PC.
     return 0;
 }
 
+// REG DIR IND,      DIR REG,        REG
 int fun_ldi     (head_cor *cor, prog_t *prog, command_s *com)
 {
-    // index index reg
     unsigned int s = char_nmb_to_int(cor->mem + prog->registres[0] + (com->params[1] % IDX_MOD), IND_SIZE) + com->params[2];
     prog->registres[0] = char_nmb_to_int(cor->mem + prog->registres[0] + (s % IDX_MOD), REG_SIZE);
     // * This operation modifies the carry.
