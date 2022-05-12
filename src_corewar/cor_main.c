@@ -31,10 +31,23 @@ void begin_virtual_machine (head_cor *cor)
             execute_this_commande(cor, expl);
             expl->cycle_to_wait = how_many_cycles_for_next(cor->mem, expl->registres[0]);
             // my_printf("cycle to wait : %d\n", expl->cycle_to_wait);
-            dump_all(cor);
+            // dump_amll(cor);
         }
         expl = expl->next;
     }
+}
+
+char *my_scanf (void)
+{
+    char *line = NULL;
+    size_t len = 0;
+    ssize_t lower_case = 0;
+    lower_case = getline(&line, &len, stdin);
+    if (lower_case < 0) {
+        free(line);
+        return NULL;
+    }
+    return line;
 }
 
 int open_programs (int ac, char **av)
@@ -49,12 +62,22 @@ int open_programs (int ac, char **av)
         }
     }
     dump_all(cor);
-    for (int cycle = 0; cycle < 62; cycle++) {
+    for (int cycle = 0; cycle < 5000; cycle++) {
         begin_virtual_machine(cor);
         // if (!(cycle % 300)) {
             // disp_str_to_hexa(cor->mem, cor->who, MEM_SIZE);
             // my_printf("\n", "cycle %d\n", cycle);
         // }
+        char *str = my_scanf();
+        if (!str) {
+            free_my_head(cor);
+            return 0;
+        } else if (str[0] == 'a') {
+            dump_all(cor);
+        }
+        free(str);
+        cycle += 9;
+        my_printf("cycle : %d\n", cycle);
     }
     free_my_head(cor);
     return 0;
