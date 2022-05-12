@@ -26,47 +26,62 @@ int how_many_cycles_for_next (unsigned char *mem, int index)
 
 prog_t *delete_id_prog (prog_t *prog, int id)
 {
+    if (!prog->next) {
+        free(prog->registres);
+        free(prog);
+        return NULL;
+    }
     if (!id) {
         prog_t *tmp = prog;
         prog = prog->next;
         free(tmp->registres);
         free(tmp);
+        return prog;
     }
     prog_t *expl = prog;
     while (expl && expl->next && (id-- - 1))
         expl = expl->next;
     prog_t *tmp = expl->next;
     expl->next = expl->next->next;
-    free(expl->registres);
-    free(expl);
+    free(tmp->registres);
+    free(tmp);
     return prog;
 }
+// expl = prog;
+// for (int i = 0; expl; i++) {
+//     my_printf("expl %d\n", i);
+//     expl = expl->next;
+// }
 
 void begin_virtual_machine (head_cor *cor)
 {
     prog_t *expl = cor->progs;
     for (int id = 0; expl; id++) {
-        my_printf("id = %d\n", id);
+        // my_printf("id = %d\n", id);
         if (expl->cycle_to_wait > 0) {
-            expl->cycle_to_wait -= 16;
-            my_printf("il rest %d cycle pour prog %d\n", expl->cycle_to_wait, expl->registres[0]);
+            expl->cycle_to_wait--;
+            // my_printf("il rest %d cycle pour prog %d\n", expl->cycle_to_wait, expl->registres[0]);
         } else {
-            my_printf("AVANT EXE COMMANDE\n");
             execute_this_commande(cor, expl);
-            my_printf("APRES EXE COMMANDE\n");
             expl->cycle_to_wait = how_many_cycles_for_next(cor->mem, expl->registres[0]);
-            my_printf("APRES How many cycles for next\n");
             // my_printf("cycle to wait : %d\n", expl->cycle_to_wait);
             // dump_amll(cor);
         }
-        my_printf("id = %d\n", id);
+        // my_printf("id = %d\n", id);
         // my_printf("prog live : %d\n", expl->cycle_to_die);
 
         if (0 > (expl->cycle_to_die--)) {
             // my_printf("program %d decede\n", id);
             cor->progs = delete_id_prog(cor->progs, id); // il décède le con
+            expl = cor->progs;
+            for (int i = 0; i < id - 1; i++)
+                expl = expl->next;
+            // my_printf("program %d decede 2\n", id);
+            if (!cor->progs)
+                return;
         }
-        expl = expl->next;
+        if (expl)
+            expl = expl->next;
         // here
         // pb tourn en boucle lors d'un fork, WHY ?
     }

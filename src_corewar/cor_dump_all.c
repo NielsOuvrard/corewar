@@ -93,7 +93,7 @@ void dump_all (head_cor *cor)
             my_printf("\n", b = 0);
     }
     prog_t *expl = cor->progs;
-    while (expl) {
+    while (expl) {      // here
         my_printf("\033[%dmProg -> registeres :\n", 97 - expl->registres[0]);
         for (int i = 0; i < REG_NUMBER; i++) {
             my_printf("r%d\t", i + 1);

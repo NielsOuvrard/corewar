@@ -15,7 +15,7 @@ char *my_strdup (char const *src)
 {
     int lengh_src = my_strlen(src) + 1;
     char *str = malloc(sizeof(char) * lengh_src);
-    str[lengh_src] = '\0';
+    str[lengh_src - 1] = '\0';
     my_strcpy(str, src);
     return str;
 }

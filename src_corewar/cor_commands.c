@@ -39,6 +39,15 @@ int how_many_args (char *list_args);
 // lfork;          ok (surment)
 // aff;            ok
 
+prog_t *add_prog_start (prog_t *dest, prog_t *new)
+{
+    new->next = NULL;
+    if (!dest)
+        return new;
+    new->next = dest;
+    return new;
+}
+
 // si après CYCLE_TO_DIE un des processsu n'a pas live -> meurt
 // Programme = champion
 // tête d'un programme = processus
@@ -58,7 +67,7 @@ int fun_live    (head_cor *cor, prog_t *prog, command_s *com)
         cor->cycle_to_die_init -= CYCLE_DELTA;
         cor->nmb_live_cycle = NBR_LIVE;
     }
-    my_printf("The player %d (%s)is alive.\n", com->params[0], prog->prog_name);
+    // my_printf("The player %d (%s)is alive.\n", com->params[0], prog->prog_name);
     prog->cycle_to_die = cor->cycle_to_die_init;
     return 0;
 }
@@ -89,7 +98,7 @@ int fun_ld      (head_cor *cor, prog_t *prog, command_s *com)
     } else {
         return 0;
     }
-    my_printf("ld : On met %d dans r%d\n", final_value, com->params[2]);
+    // my_printf("ld : On met %d dans r%d\n", final_value, com->params[2]);
     prog->registres[com->params[2] - 1] = final_value;
     return 0;
 }
@@ -129,7 +138,7 @@ int fun_st      (head_cor *cor, prog_t *prog, command_s *com)
 
 int fun_zjmp    (head_cor *cor, prog_t *prog, command_s *com)
 {
-    my_printf("prog de carry : %d\n", prog->carry);
+    // my_printf("prog de carry : %d\n", prog->carry);
     if (!prog->carry)
         return com->next_fun = 3;
     short move;
@@ -138,7 +147,7 @@ int fun_zjmp    (head_cor *cor, prog_t *prog, command_s *com)
     } else {
         move = (short)(com->params[1] % IDX_MOD);
     }
-    my_printf("on jump de %d\n", move);
+    // my_printf("on jump de %d\n", move);
     prog->pc = (prog->pc + move) % MEM_SIZE;
     com->next_fun = 0;
     return 0;
@@ -164,6 +173,16 @@ int fun_ldi     (head_cor *cor, prog_t *prog, command_s *com)
     return 0;
 }
 
+// on bouge de -314
+// on ecrit 0 en mem[-4]
+// ==23733== Invalid write of size 1
+// ==23733==    at 0x401ABC: fun_sti (cor_commands.c:198)
+// ==23733==    by 0x403B43: execute_this_commande (cor_execute_this_commande.c:116)
+// ==23733==    by 0x4009BF: begin_virtual_machine (cor_arguments_input.c:65)
+// ==23733==    by 0x403E4F: open_programs (cor_main.c:49)
+// ==23733==    by 0x403F27: main (cor_main.c:86)
+
+
 // reg , reg / idx / dir , reg / dir
 int fun_sti     (head_cor *cor, prog_t *prog, command_s *com)
 {
@@ -183,8 +202,9 @@ int fun_sti     (head_cor *cor, prog_t *prog, command_s *com)
     else
         move3 = (short)(com->params[3] % IDX_MOD);
     // modify_str_with_bits(cor->mem + ((prog->pc + ((move2 + move3) % IDX_MOD)) % MEM_SIZE), prog->registres[com->params[1] - 1]);
-    // my_printf("on bouge de %d\n", move2 + move3);
+    my_printf("on bouge de %d\n", move2 + move3);
     // my_printf("on ecrase à partir de %d = %d\n", (((prog->pc) + ((move2 + move3) % IDX_MOD)) + 0) % MEM_SIZE, last_octet_int_to_char(prog->registres[com->params[1] - 1] >> 24));
+    my_printf("on ecrit %d en mem[%d]\n", last_octet_int_to_char(prog->registres[com->params[1] - 1] >> 24), (((prog->pc) + ((move2 + move3) % IDX_MOD)) + 0) % MEM_SIZE);
     cor->mem[(((prog->pc) + ((move2 + move3) % IDX_MOD)) + 0) % MEM_SIZE] = last_octet_int_to_char(prog->registres[com->params[1] - 1] >> 24);
     cor->mem[(((prog->pc) + ((move2 + move3) % IDX_MOD)) + 1) % MEM_SIZE] = last_octet_int_to_char(prog->registres[com->params[1] - 1] >> 16);
     cor->mem[(((prog->pc) + ((move2 + move3) % IDX_MOD)) + 2) % MEM_SIZE] = last_octet_int_to_char(prog->registres[com->params[1] - 1] >> 8);
@@ -206,8 +226,10 @@ int fun_fork    (head_cor *cor, prog_t *prog, command_s *com)
     for (int i = 1; i < 16; i++)
         new_prog->registres[i] = 0;
     new_prog->registres[0] = prog->registres[0];
+    // my_printf("prog name = %s\n", prog->prog_name);
     new_prog->prog_name = my_strdup(prog->prog_name);
-    cor->progs = add_prog(cor->progs, new_prog);
+    new_prog->next = NULL;
+    cor->progs = add_prog_start(cor->progs, new_prog);
     short move;
     if ((unsigned short)com->params[1] >= 0x8000) {
         move = ( - (~(short)(com->params[1])) - 1) % IDX_MOD;
@@ -242,7 +264,7 @@ int fun_lld     (head_cor *cor, prog_t *prog, command_s *com)
     } else {
         return prog->carry = 0;
     }
-    my_printf("ld : On met %d dans r%d\n", final_value, com->params[2]);
+    // my_printf("ld : On met %d dans r%d\n", final_value, com->params[2]);
     prog->registres[com->params[2] - 1] = final_value;
     prog->carry = 1;
     return 0;
@@ -275,8 +297,9 @@ int fun_lfork   (head_cor *cor, prog_t *prog, command_s *com)
     for (int i = 1; i < 16; i++)
         new_prog->registres[i] = 0;
     new_prog->registres[0] = prog->registres[0];
+    new_prog->next = NULL;
     new_prog->prog_name = my_strdup(prog->prog_name);
-    cor->progs = add_prog(cor->progs, new_prog);
+    cor->progs = add_prog_start(cor->progs, new_prog);
     short move;
     if ((unsigned short)com->params[1] >= 0x8000) {
         move = ( - (~(short)(com->params[1])) - 1);

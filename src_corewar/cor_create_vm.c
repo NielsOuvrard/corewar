@@ -17,8 +17,8 @@
 prog_t *add_prog (prog_t *dest, prog_t *new)
 {
     prog_t *begin = dest;
+    new->next = NULL;
     if (!begin) {
-        new->next = NULL;
         return new;
     }
     while (dest && dest->next)
@@ -39,6 +39,7 @@ head_cor *create_mem (void)
     cor->progs = NULL;
     cor->nmb_player = 1;
     cor->cycle_to_die_init = CYCLE_TO_DIE;
+    cor->nmb_live_cycle = NBR_LIVE;
     cor->recurence_dump = 100;
     cor->champions_id = NULL;
     return cor;
@@ -72,6 +73,7 @@ chmp_id *new_chmp (chmp_id *list, int id)
 {
     chmp_id *new = malloc(sizeof(chmp_id));
     new->id = id;
+    new->next = NULL;
     if (!list)
         return new;
     new->next = list;

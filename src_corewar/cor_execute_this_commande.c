@@ -73,9 +73,9 @@ void a_special_function (head_cor *cor, prog_t *prog, command_s *com)
 
 void non_special_function (head_cor *cor, prog_t *prog, command_s *com)
 {
-    my_printf("ok here non_special_function\n");
+    // my_printf("ok here non_special_function\n");
     com->parametres_type = type_param_to_str(cor->mem[prog->pc + com->next_fun]);
-    my_printf("params : '%s'\n", com->parametres_type);
+    // my_printf("params : '%s'\n", com->parametres_type);
 
     // my_printf("on a les params : %s\n", com->parametres_type);
     int nmb_args = how_many_args(com->parametres_type);
@@ -92,12 +92,10 @@ void non_special_function (head_cor *cor, prog_t *prog, command_s *com)
 
 void execute_this_commande (head_cor *cor, prog_t *prog)
 {
-    my_printf("here ok *** *** *** *** *** *** *** *** 0\n");
     if (!cor->mem[prog->pc] || cor->mem[prog->pc] > 17) {
         prog->pc = (prog->pc + 1) % MEM_SIZE;
         return;
     }
-    my_printf("here ok *** *** *** *** *** *** *** *** 1\n");
     if (cor->who[prog->pc] != 0 && cor->who[prog->pc] != prog->registres[0])
         return; // destroy prog
     int funct = cor->mem[(prog->pc)] - 1;
