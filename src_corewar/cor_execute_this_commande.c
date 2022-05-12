@@ -74,6 +74,8 @@ void a_special_function (head_cor *cor, prog_t *prog, command_s *com)
 void non_special_function (head_cor *cor, prog_t *prog, command_s *com)
 {
     com->parametres_type = type_param_to_str(cor->mem[prog->registres[0] + com->next_fun]);
+    my_printf("params : '%s'\n", com->parametres_type);
+
     // my_printf("on a les params : %s\n", com->parametres_type);
     int nmb_args = how_many_args(com->parametres_type);
     com->params = malloc(sizeof(int) * (nmb_args + 1));
@@ -85,15 +87,16 @@ void non_special_function (head_cor *cor, prog_t *prog, command_s *com)
     }
     com->next_fun++;
     recup_params_according_to_str(cor, prog, com);
-    free(com->parametres_type);
 }
 
 void execute_this_commande (head_cor *cor, prog_t *prog)
 {
     if (!cor->mem[prog->registres[0]] || cor->mem[prog->registres[0]] > 17) {
         (prog->registres[0])++;
+        my_printf("on décale de 1\n");
         return;
     }
+    my_printf("commande\n");
     if (cor->who[prog->registres[0]] != 0 && cor->who[prog->registres[0]] != prog->nmb_player)
         return; // destroy prog
     int funct = cor->mem[(prog->registres[0])] - 1;
@@ -101,21 +104,25 @@ void execute_this_commande (head_cor *cor, prog_t *prog)
     com->function = funct;
     com->next_fun = 1;
     op_t val = op_tab[funct];
+    int to_free = 0;
     if (funct == 0 || funct == 8 || funct == 11 || funct == 14) {
         a_special_function(cor, prog, com);
     } else {
         non_special_function(cor, prog, com);
+        to_free = 1;
     }
     // my_printf("Commande %s executée\n", val.mnemonique);
     int (*tab[16])(head_cor *cor, prog_t *prog, command_s *com);
     my_fill_funktab(tab);
-    tab[funct](cor, prog, com);
+    tab[funct](cor, prog, com); // error read 1 = com->parametres_type
     // ! execute here
     prog->registres[0] += com->next_fun;
     my_printf("com %s%s%s\nargs : ", MY_COLOR_GREEN, val.mnemonique, MY_COLOR_RESET);
     for (int a = 1; a < com->params[0] + 1; a++)
         my_printf("'%d' ", com->params[a]);
     my_printf("\n\n");
+    if (to_free)
+        free(com->parametres_type);
     free(com->params);
     free(com);
 }

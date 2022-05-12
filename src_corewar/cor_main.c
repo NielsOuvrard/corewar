@@ -14,10 +14,11 @@
 
 int how_many_cycles_for_next (unsigned char *mem, int index)
 {
-    if (mem[index] - 1 == 0 || mem[index] - 1 > 0x10) {
+    if (mem[index] <= 0 || (mem[index] - 1) > 0x10) {
         return 0;
     }
     op_t val = op_tab[mem[index] - 1];
+    my_printf("mem de index = %d\tça return %d\n", mem[index], val.nbr_cycles);
     return val.nbr_cycles;
 }
 
@@ -27,6 +28,7 @@ void begin_virtual_machine (head_cor *cor)
     while (expl) {
         if (expl->cycle_to_wait) {
             expl->cycle_to_wait--;
+            my_printf("il rest %d cycle pour prog %d\n", expl->cycle_to_wait, expl->nmb_player);
         } else {
             execute_this_commande(cor, expl);
             expl->cycle_to_wait = how_many_cycles_for_next(cor->mem, expl->registres[0]);
