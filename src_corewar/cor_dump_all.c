@@ -100,7 +100,7 @@ void dump_all (head_cor *cor)
             print_int_bits(expl->registres[i]);
             my_printf("\t->\t%d\n", expl->registres[i]);
         }
-        my_putchar('\n');
+        my_printf("\ncycle_to_die : %d\n", expl->cycle_to_die);
         expl = expl->next;
     }
     my_putstr(MY_COLOR_RESET);

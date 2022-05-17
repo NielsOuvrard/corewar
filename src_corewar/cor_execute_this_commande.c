@@ -43,12 +43,12 @@ void recup_params_according_to_str (head_cor *cor, prog_t *prog, command_s *com)
         }
         if (com->parametres_type[i] == 'd' &&
         com->function != 9 && com->function != 10) {
-            com->params[index_arr++] = char_nmb_to_int(str + index, DIR_SIZE);
+            com->params[index_arr++] = char_nmb_to_int(str, index, DIR_SIZE);
             index += DIR_SIZE;
         }
         if (com->parametres_type[i] == 'i' || (com->parametres_type[i] == 'd'
         && (com->function == 9 || com->function == 10))) {
-            com->params[index_arr++] = char_nmb_to_int(str + index, IND_SIZE);
+            com->params[index_arr++] = char_nmb_to_int(str, index, IND_SIZE);
             index += IND_SIZE;
         }
     }
@@ -63,11 +63,11 @@ void a_special_function (head_cor *cor, prog_t *prog, command_s *com)
     com->params[0] = 1;
     if (com->function == 0) {
         com->params[1] =
-        char_nmb_to_int(cor->mem + prog->registres[0] + com->next_fun, DIR_SIZE);
+        char_nmb_to_int(cor->mem, prog->registres[0] + com->next_fun, DIR_SIZE);
         com->next_fun += DIR_SIZE;
         return;
     }
-    com->params[1] = char_nmb_to_int(cor->mem + prog->registres[0] + com->next_fun, IND_SIZE);
+    com->params[1] = char_nmb_to_int(cor->mem, prog->registres[0] + com->next_fun, IND_SIZE);
     com->next_fun += IND_SIZE;
 }
 
@@ -92,11 +92,9 @@ void non_special_function (head_cor *cor, prog_t *prog, command_s *com)
 void execute_this_commande (head_cor *cor, prog_t *prog)
 {
     if (!cor->mem[prog->registres[0]] || cor->mem[prog->registres[0]] > 17) {
-        (prog->registres[0])++;
-        my_printf("on décale de 1\n");
+        prog->registres[0] = (prog->registres[0] + 1) % MEM_SIZE;
         return;
     }
-    my_printf("commande\n");
     if (cor->who[prog->registres[0]] != 0 && cor->who[prog->registres[0]] != prog->nmb_player)
         return; // destroy prog
     int funct = cor->mem[(prog->registres[0])] - 1;
@@ -115,8 +113,7 @@ void execute_this_commande (head_cor *cor, prog_t *prog)
     int (*tab[16])(head_cor *cor, prog_t *prog, command_s *com);
     my_fill_funktab(tab);
     tab[funct](cor, prog, com); // error read 1 = com->parametres_type
-    // ! execute here
-    prog->registres[0] += com->next_fun;
+    prog->registres[0] = (prog->registres[0] + com->next_fun) % MEM_SIZE;
     my_printf("com %s%s%s\nargs : ", MY_COLOR_GREEN, val.mnemonique, MY_COLOR_RESET);
     for (int a = 1; a < com->params[0] + 1; a++)
         my_printf("'%d' ", com->params[a]);

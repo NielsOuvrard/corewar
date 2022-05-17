@@ -39,7 +39,7 @@ void print_int_bits (unsigned int num)
     }
 }
 
-unsigned int char_nmb_to_int (unsigned char *str, int size)
+unsigned int char_nmb_to_int (unsigned char *str, int index, int size)
 {
     unsigned int elem = 0;
     int index_str = size - 1, decale = 0;
@@ -48,7 +48,7 @@ unsigned int char_nmb_to_int (unsigned char *str, int size)
             decale = 0;
             index_str--;
         }
-        if ((str[index_str] >> decale) & 1)
+        if ((str[(index_str + index) % IDX_MOD] >> decale) & 1)
             elem = modify_bit_n_in_int(elem, i, 1);
         decale++;
     }

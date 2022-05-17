@@ -36,6 +36,9 @@ head_cor *create_mem (void)
         cor->who[i] = '\0';
     cor->progs = NULL;
     cor->nmb_player = 1;
+    // cor->cycle_delta = CYCLE_DELTA;
+    cor->cycle_to_die_init = CYCLE_TO_DIE;
+    cor->recurence_dump = 100;
     return cor;
 }
 
@@ -67,6 +70,8 @@ bool binary_to_mem (int ac, char *filepath, head_cor *cor, int idx)
     for (int i = 0; i < size - decale; i++)
         cor->who[prog->registres[0] + i] = prog->nmb_player;
     op_t val = op_tab[cor->mem[prog->registres[0]] - 1];
-    prog->cycle_to_wait =  val.nbr_cycles;
+    prog->cycle_to_wait = val.nbr_cycles;
+    prog->carry = 1;
+    prog->cycle_to_die = CYCLE_TO_DIE;
     return 1;
 }

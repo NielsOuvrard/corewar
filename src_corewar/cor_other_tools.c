@@ -2,7 +2,7 @@
 ** EPITECH PROJECT, 2022
 ** corewar
 ** File description:
-** thr_good_corewar
+** the_good_corewar
 */
 
 #include "cor_header.h"
@@ -48,8 +48,17 @@ char *type_param_to_str (unsigned char param)
         }
         all_types[i] = return_type_char(type);
     }
+    my_printf("//////////////////// Param types : %s\n", all_types);
     return all_types;
 }
+// while (all_types[0] == ' ')
+//     all_types++;
+// for (int i = 0; all_types[i + 1]; i++) {
+//     if (all_types[i] == ' ' && all_types[i + 1] != ' ') {
+//         all_types[i] = all_types[i + 1];
+//         all_types[i + 1] = ' ';
+//     }
+// }
 
 int how_many_args (char *list_args)
 {

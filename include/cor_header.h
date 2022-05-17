@@ -17,29 +17,29 @@
 
 typedef struct command_s {
     int function;
-    char *parametres_type;
-    int *params;
     int size_cycle;
     int next_fun;
-    // struct command_s *next;
+    int *params;
+    char *parametres_type;
 } command_s;
 
 typedef struct prog_t {
-    char *prog_name;
+    bool carry;
     int nmb_player;
-    int *registres;
-    // 16 reg differents, le 1e = num du joueur
-    // reg PC = index
-    int carry;
-    int index;
+    int cycle_to_die;
     int cycle_to_wait;
+    int *registres;
+    char *prog_name;
     struct prog_t *next;
 } prog_t;
 
 typedef struct head_cor {
-    unsigned char *mem;
-    char *who;
     int nmb_player;
+    int cycle_to_die_init;
+    int nmb_live_cycle;
+    int recurence_dump;
+    char *who;
+    unsigned char *mem;
     prog_t *progs;
 } head_cor;
 
@@ -119,7 +119,7 @@ void print_char_bits (unsigned char c);
 
 void print_int_bits (unsigned int num);
 
-unsigned int char_nmb_to_int (unsigned char *str, int size);
+unsigned int char_nmb_to_int (unsigned char *str, int index, int size);
 
 bool compare_bit (unsigned a, unsigned b, int size);
 

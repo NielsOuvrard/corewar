@@ -22,12 +22,30 @@ int how_many_cycles_for_next (unsigned char *mem, int index)
     return val.nbr_cycles;
 }
 
+prog_t *delete_id_prog (prog_t *prog, int id)
+{
+    if (!id) {
+        prog_t *tmp = prog;
+        prog = prog->next;
+        free(tmp->registres);
+        free(tmp);
+    }
+    prog_t *expl = prog;
+    while (expl && expl->next && (id-- - 1))
+        expl = expl->next;
+    prog_t *tmp = expl->next;
+    expl->next = expl->next->next;
+    free(expl->registres);
+    free(expl);
+    return prog;
+}
+
 void begin_virtual_machine (head_cor *cor)
 {
     prog_t *expl = cor->progs;
-    while (expl) {
-        if (expl->cycle_to_wait) {
-            expl->cycle_to_wait--;
+    for (int id = 0; expl; id++) {
+        if (expl->cycle_to_wait > 0) {
+            expl->cycle_to_wait -= 16;
             my_printf("il rest %d cycle pour prog %d\n", expl->cycle_to_wait, expl->nmb_player);
         } else {
             execute_this_commande(cor, expl);
@@ -35,8 +53,13 @@ void begin_virtual_machine (head_cor *cor)
             // my_printf("cycle to wait : %d\n", expl->cycle_to_wait);
             // dump_amll(cor);
         }
+        my_printf("prog de carry : %d\n", expl->carry);
+
+        if (!(expl->cycle_to_die--))
+            cor->progs = delete_id_prog(cor->progs, id); // il décède le con
         expl = expl->next;
     }
+    my_printf("cycle live %d\n", cor->cycle_to_die_init);
 }
 
 char *my_scanf (void)
@@ -55,8 +78,18 @@ char *my_scanf (void)
 int open_programs (int ac, char **av)
 {
     head_cor *cor = create_mem();
+    int start = 1;
+    if (!my_strcmp(av[1], "-dump") && av[2] && my_isnbr(av[2])) {
+        start += 2;
+        cor->recurence_dump = my_getnbr(av[2]);
+    }
+    my_printf("dump tous les %d\n", cor->recurence_dump);
     int idx_align_com = 0;
-    for (int i = 1; i < ac; i++) {
+    for (int i = start; i < ac; i++) {
+        // if (!my_strcmp(av[i], "-a"))
+
+        if (!my_strcmp(av[i], "-n") && av[i + 1] && my_isnbr(av[++i]) && av[i + 1])
+            my_printf("%d", my_getnbr(av[i++]));
         if (!binary_to_mem(ac, av[i], cor, idx_align_com++)) {
             free(cor->mem);
             free(cor);
@@ -64,7 +97,7 @@ int open_programs (int ac, char **av)
         }
     }
     dump_all(cor);
-    for (int cycle = 0; cycle < 5000; cycle++) {
+    for (int cycle = 0; cycle < 50000; cycle++) {
         begin_virtual_machine(cor);
         // if (!(cycle % 300)) {
             // disp_str_to_hexa(cor->mem, cor->who, MEM_SIZE);
@@ -78,7 +111,6 @@ int open_programs (int ac, char **av)
             dump_all(cor);
         }
         free(str);
-        cycle += 9;
         my_printf("cycle : %d\n", cycle);
     }
     free_my_head(cor);
