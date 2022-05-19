@@ -21,7 +21,7 @@ void free_my_head (head_cor *cor)
         prog_t *tmp = expl;
         expl = expl->next;
         free(tmp->registres);
-        free(tmp->prog_name);
+        // free(tmp->prog_name);
         free(tmp);
     }
     free(cor);

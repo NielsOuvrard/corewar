@@ -15,8 +15,11 @@
 // bonus :
 // affichage
 // dump plus de précision (nmb de octet / lignes) (binaire, decimal)
+//
+// args :
+//
 
-// arguments du main
+// gestion erreur fonction pas ok
 
 // peut-etre crash lorsq detruire processus
 
@@ -28,11 +31,11 @@ int how_many_args (char *list_args);
 // ...
 // st;             ok
 // zjmp;           ok
-// ldi;            bizzare, AER ?
-// sti;            
+// ldi;            
+// sti;            ok ?
 // fork;           ok (surment)
 // lld;            ok
-// lldi;           
+// lldi;           ok ?
 // lfork;          ok (surment)
 // aff;            ok
 
@@ -51,7 +54,7 @@ int how_many_args (char *list_args);
 int fun_live    (head_cor *cor, prog_t *prog, command_s *com)
 {
     cor->nmb_live_cycle--;
-    if (!cor->nmb_live_cycle) {
+    if (0 > cor->nmb_live_cycle) {
         cor->cycle_to_die_init -= CYCLE_DELTA;
         cor->nmb_live_cycle = NBR_LIVE;
     }
@@ -66,15 +69,17 @@ int fun_ld      (head_cor *cor, prog_t *prog, command_s *com)
 {
     if (how_many_args(com->parametres_type) != 2)
         return 0;
-    my_printf("param 1 = %c et param 2 = %c\n", com->parametres_type[0], com->parametres_type[1]);
+    if (com->params[0] == 0 || com->params[0] > 16)
+        return 0;
+    // my_printf("param 1 = %c et param 2 = %c\n", com->parametres_type[0], com->parametres_type[1]);
     if ((com->parametres_type[0] != 'i' && com->parametres_type[0] != 'd') || com->parametres_type[1] != 'r')
         return 0;
-    my_printf("fonction ld ok\n");
+    // my_printf("fonction ld ok\n");
     // not the PC
     int final_value;
     if (com->parametres_type[0] == 'i') {
         unsigned int value;
-        value = char_nmb_to_int(cor->mem, prog->registres[0] + (com->params[1] % IDX_MOD), REG_SIZE);
+        value = char_nmb_to_int(cor->mem, prog->pc + (com->params[1] % IDX_MOD), REG_SIZE);
         if (value >= 0x80000000)
             final_value = ( - (~(value)) - 1);
         else
@@ -112,8 +117,12 @@ int fun_st      (head_cor *cor, prog_t *prog, command_s *com)
             final_value = ( - (~(value)) - 1);
         else
             final_value = value;
-        final_value %= IDX_MOD;
-        modify_str_with_bits(cor->mem + (prog->registres[0] + (final_value)), prog->registres[com->params[1] - 1]);
+        // final_value %= IDX_MOD;
+        cor->mem[(((prog->pc) + (final_value % IDX_MOD)) + 0) % MEM_SIZE] = last_octet_int_to_char(prog->registres[com->params[1] - 1] >> 24);
+        cor->mem[(((prog->pc) + (final_value % IDX_MOD)) + 1) % MEM_SIZE] = last_octet_int_to_char(prog->registres[com->params[1] - 1] >> 16);
+        cor->mem[(((prog->pc) + (final_value % IDX_MOD)) + 2) % MEM_SIZE] = last_octet_int_to_char(prog->registres[com->params[1] - 1] >> 8);
+        cor->mem[(((prog->pc) + (final_value % IDX_MOD)) + 3) % MEM_SIZE] = last_octet_int_to_char(prog->registres[com->params[1] - 1] >> 0);
+        // modify_str_with_bits(cor->mem + (prog->pc + (final_value)), prog->registres[com->params[1] - 1]);
     }
     return 0;
 }
@@ -130,7 +139,7 @@ int fun_zjmp    (head_cor *cor, prog_t *prog, command_s *com)
         move = (short)(com->params[1] % IDX_MOD);
     }
     my_printf("on jump de %d\n", move);
-    prog->registres[0] = (prog->registres[0] + move) % MEM_SIZE;
+    prog->pc = (prog->pc + move) % MEM_SIZE;
     com->next_fun = 0;
     return 0;
 }
@@ -144,9 +153,9 @@ int fun_ldi     (head_cor *cor, prog_t *prog, command_s *com)
     if ((com->parametres_type[1] != 'd' && com->parametres_type[1] != 'r') || com->parametres_type[2] != 'r')
         return prog->carry = 0;
     // * bizzare
-    unsigned int s = char_nmb_to_int(
-    cor->mem, prog->registres[0] + (com->params[1] % IDX_MOD), IND_SIZE) + com->params[2];
-    prog->registres[0] = char_nmb_to_int(cor->mem, prog->registres[0] + (s % IDX_MOD), REG_SIZE);
+    // unsigned int s = char_nmb_to_int(
+    // cor->mem, prog->pc + (com->params[1] % IDX_MOD), IND_SIZE) + com->params[2];
+    // prog->pc = char_nmb_to_int(cor->mem, prog->registres[0] + (s % IDX_MOD), REG_SIZE);
     prog->carry = 1;
 
     // ldi 3,%4,r1 reads IND_SIZ bytes from the address PC + 3 % IDX_MOD, adds 4 to this value.
@@ -173,9 +182,15 @@ int fun_sti     (head_cor *cor, prog_t *prog, command_s *com)
         move3 = ( - (~(short)(com->params[3])) - 1) % IDX_MOD;
     else
         move3 = (short)(com->params[3] % IDX_MOD);
-    modify_str_with_bits(cor->mem + ((prog->registres[0] + ((move2 + move3) % IDX_MOD)) % MEM_SIZE), prog->registres[com->params[1] - 1]);
+    // modify_str_with_bits(cor->mem + ((prog->pc + ((move2 + move3) % IDX_MOD)) % MEM_SIZE), prog->registres[com->params[1] - 1]);
+    // my_printf("on bouge de %d\n", move2 + move3);
+    // my_printf("on ecrase à partir de %d = %d\n", (((prog->pc) + ((move2 + move3) % IDX_MOD)) + 0) % MEM_SIZE, last_octet_int_to_char(prog->registres[com->params[1] - 1] >> 24));
+    cor->mem[(((prog->pc) + ((move2 + move3) % IDX_MOD)) + 0) % MEM_SIZE] = last_octet_int_to_char(prog->registres[com->params[1] - 1] >> 24);
+    cor->mem[(((prog->pc) + ((move2 + move3) % IDX_MOD)) + 1) % MEM_SIZE] = last_octet_int_to_char(prog->registres[com->params[1] - 1] >> 16);
+    cor->mem[(((prog->pc) + ((move2 + move3) % IDX_MOD)) + 2) % MEM_SIZE] = last_octet_int_to_char(prog->registres[com->params[1] - 1] >> 8);
+    cor->mem[(((prog->pc) + ((move2 + move3) % IDX_MOD)) + 3) % MEM_SIZE] = last_octet_int_to_char(prog->registres[com->params[1] - 1] >> 0);
     for (int i = 0; i < 4; i++)
-        cor->who[prog->registres[0] + ((move2 + move3) % IDX_MOD) + i] = prog->nmb_player;
+        cor->who[prog->pc + ((move2 + move3) % IDX_MOD) + i] = prog->registres[0];
     // sti r2,%4,%5 copies the contentof r2 into the address PC + (4+5) % IDX_MOD.
     // prog->registres[com->params[1]];
     return 0;
@@ -186,11 +201,11 @@ int fun_fork    (head_cor *cor, prog_t *prog, command_s *com)
     prog_t *new_prog = malloc(sizeof(prog_t));
     new_prog->carry = 1;
     new_prog->cycle_to_wait = 0;
-    new_prog->nmb_player = prog->nmb_player;
     new_prog->cycle_to_die = cor->nmb_live_cycle;
     new_prog->registres = malloc(sizeof(int) * 16);
-    for (int i = 0; i < 16; i++)
+    for (int i = 1; i < 16; i++)
         new_prog->registres[i] = 0;
+    new_prog->registres[0] = prog->registres[0];
     new_prog->prog_name = my_strdup(prog->prog_name);
     cor->progs = add_prog(cor->progs, new_prog);
     short move;
@@ -199,7 +214,7 @@ int fun_fork    (head_cor *cor, prog_t *prog, command_s *com)
     } else {
         move = (short)(com->params[1] % IDX_MOD);
     }
-    new_prog->registres[0] = prog->registres[0] + move;
+    new_prog->pc = prog->pc + move;
     // idx
     // It creates a new program that inherits different states from the parent.
     // This program is executed at the address PC + first parameter % IDX_MOD.
@@ -217,7 +232,7 @@ int fun_lld     (head_cor *cor, prog_t *prog, command_s *com)
     int final_value;
     if (com->parametres_type[0] == 'i') {
         unsigned int value;
-        value = char_nmb_to_int(cor->mem, prog->registres[0] + (com->params[1]), REG_SIZE);
+        value = char_nmb_to_int(cor->mem, prog->pc + (com->params[1]), REG_SIZE);
         if (value >= 0x80000000)
             final_value = ( - (~(value)) - 1);
         else
@@ -244,8 +259,8 @@ int fun_lldi    (head_cor *cor, prog_t *prog, command_s *com)
     if ((com->parametres_type[2 - 1] != 'r') ||
         (com->parametres_type[1 - 1] != 'd' && com->parametres_type[1 - 1] != 'i'))
         return prog->carry = 0;
-    unsigned int s = char_nmb_to_int(cor->mem, prog->registres[0] + com->params[1], IND_SIZE) + com->params[2];
-    prog->registres[0] = char_nmb_to_int(cor->mem, prog->registres[0] + s, REG_SIZE);
+    unsigned int s = char_nmb_to_int(cor->mem, prog->pc + com->params[1], IND_SIZE) + com->params[2];
+    prog->pc = char_nmb_to_int(cor->mem, prog->pc + s, REG_SIZE);
     prog->carry = 1;
     return 0;
 }
@@ -255,11 +270,11 @@ int fun_lfork   (head_cor *cor, prog_t *prog, command_s *com)
     prog_t *new_prog = malloc(sizeof(prog_t));
     new_prog->carry = 1;
     new_prog->cycle_to_wait = 0;
-    new_prog->nmb_player = prog->nmb_player;
     new_prog->cycle_to_die = cor->nmb_live_cycle;
     new_prog->registres = malloc(sizeof(int) * 16);
-    for (int i = 0; i < 16; i++)
+    for (int i = 1; i < 16; i++)
         new_prog->registres[i] = 0;
+    new_prog->registres[0] = prog->registres[0];
     new_prog->prog_name = my_strdup(prog->prog_name);
     cor->progs = add_prog(cor->progs, new_prog);
     short move;
@@ -268,7 +283,7 @@ int fun_lfork   (head_cor *cor, prog_t *prog, command_s *com)
     } else {
         move = (short)(com->params[1]);
     }
-    new_prog->registres[0] = prog->registres[0] + move;
+    new_prog->pc = prog->pc + move;
     return 0;
 }
 

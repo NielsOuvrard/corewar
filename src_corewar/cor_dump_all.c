@@ -82,7 +82,7 @@ void dump_all (head_cor *cor)
         my_printf("\033[%dm", 97 - cor->who[i]);
         prog_t *expl = cor->progs;
         while (expl) {
-            if (expl->registres[0] == i)
+            if (expl->pc == i)
                 my_printf("%s\033[%dm", MY_COLOR_RESET, 107 - cor->who[i]);
             expl = expl->next;
         }
@@ -94,7 +94,7 @@ void dump_all (head_cor *cor)
     }
     prog_t *expl = cor->progs;
     while (expl) {
-        my_printf("\033[%dmProg %d -> registeres :\n", 97 - expl->nmb_player, expl->nmb_player);
+        my_printf("\033[%dmProg -> registeres :\n", 97 - expl->registres[0]);
         for (int i = 0; i < REG_NUMBER; i++) {
             my_printf("r%d\t", i + 1);
             print_int_bits(expl->registres[i]);
