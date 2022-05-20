@@ -48,7 +48,7 @@ int open_programs (int ac, char **av)
         // my_printf("beg VM\n");
         begin_virtual_machine(cor);
         // my_printf("end VM\n");
-        // if (!(cycle % 300)) {
+        // if (!(cycle % 500)) {
             // disp_str_to_hexa(cor->mem, cor->who, MEM_SIZE);
             // my_printf("\n", "cycle %d\n", cycle);
         // }
@@ -61,13 +61,16 @@ int open_programs (int ac, char **av)
         //     dump_all(cor);
         // }
         // free(str);
+
         // my_printf("cycle : %d\n", cycle);
-        if (nmb_processus(cor->progs) == 1) {
-            dump_all(cor);
-            my_printf("The player %d (%s) has won.\n\n", cor->progs->registres[0], cor->progs->prog_name);
-            free_my_head(cor);
-            return 0;
-        }
+
+        // if (nmb_processus(cor->progs) == 1) {
+        //     my_printf("cycle pour live %d\n", cor->cycle_to_die_init);
+        //     dump_all(cor);
+        //     my_printf("The player %d (%s) has won.\n\n", cor->progs->registres[0], cor->progs->prog_name);
+        //     free_my_head(cor);
+        //     return 0;
+        // }
     }
     // free_my_head(cor);
     return 0;

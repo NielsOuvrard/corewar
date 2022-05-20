@@ -93,11 +93,12 @@ void non_special_function (head_cor *cor, prog_t *prog, command_s *com)
 void execute_this_commande (head_cor *cor, prog_t *prog)
 {
     if (!cor->mem[prog->pc] || cor->mem[prog->pc] > 17) {
-        prog->pc = (prog->pc + 1) % MEM_SIZE;
+        prog->pc = (((prog->pc + 1) % MEM_SIZE) + MEM_SIZE) % MEM_SIZE;
         return;
     }
     if (cor->who[prog->pc] != 0 && cor->who[prog->pc] != prog->registres[0])
         return; // destroy prog
+    my_printf("commande de %d\n\n", prog->registres[0]);
     int funct = cor->mem[(prog->pc)] - 1;
     command_s *com = malloc(sizeof(command_s));
     com->function = funct;
@@ -113,9 +114,12 @@ void execute_this_commande (head_cor *cor, prog_t *prog)
     // my_printf("Commande %s executée\n", val.mnemonique);
     int (*tab[16])(head_cor *cor, prog_t *prog, command_s *com);
     my_fill_funktab(tab);
-    tab[funct](cor, prog, com); // error read 1 = com->parametres_type
-    prog->pc = (prog->pc + com->next_fun) % MEM_SIZE;
-    my_printf("com %s%s%s\nargs : ", MY_COLOR_GREEN, val.mnemonique, MY_COLOR_RESET);
+    if (!tab[funct](cor, prog, com)) {
+        com->next_fun = 1;
+        my_printf("errerur -> commande executée sans succes\n");
+    }
+    prog->pc = (((prog->pc + com->next_fun) % MEM_SIZE) + MEM_SIZE) % MEM_SIZE;
+    my_printf("com %s%s%s\nargs : ", MY_COLOR_GREEN, val.mnemonique, MY_COLOR_RESET);        // * here com
     for (int a = 1; a < com->params[0] + 1; a++)
         my_printf("'%d' ", com->params[a]);
     my_printf("\n\n");

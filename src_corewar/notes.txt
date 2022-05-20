@@ -1,4 +1,11 @@
 
+// Question AER :
+
+fork double tous les processus actifs du champions ou celement celui qui fork ?
+
+ldi ? deux fois modulo ? dans le reg 0 ?
+
+
 // register = 1 value
 
 // APC = compteur de programme

@@ -48,7 +48,7 @@ char *type_param_to_str (unsigned char param)
         }
         all_types[i] = return_type_char(type);
     }
-    // my_printf("//////////////////// Param types : %s\n", all_types);
+    my_printf("//////////////////// Param types : %s\n", all_types);
     return all_types;
 }
 // while (all_types[0] == ' ')

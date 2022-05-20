@@ -16,9 +16,9 @@
 // ...
 // add;            ok
 // sub;            ok
-// and;            ok
-// or;             ok
-// xor;            ok
+// and;            ...
+// or;             ...
+// xor;            ...
 // ...
 
 
@@ -47,7 +47,7 @@ int fun_add     (head_cor *cor, prog_t *prog, command_s *com)
     prog->registres[com->params[3] - 1] =
     prog->registres[com->params[1] - 1] + prog->registres[com->params[2] - 1];
     prog->carry = 1;
-    return 0;
+    return 1;
 }
 
 int fun_sub     (head_cor *cor, prog_t *prog, command_s *com)
@@ -59,7 +59,7 @@ int fun_sub     (head_cor *cor, prog_t *prog, command_s *com)
     prog->registres[com->params[3] - 1] =
     prog->registres[com->params[1] - 1] - prog->registres[com->params[2] - 1];
     prog->carry = 1;
-    return 0;
+    return 1;
 }
 
 // T_REG | T_DIR | T_IND,            T_REG | T_IND | T_DIR,         T_REG
@@ -68,36 +68,36 @@ int fun_sub     (head_cor *cor, prog_t *prog, command_s *com)
 
 int fun_and     (head_cor *cor, prog_t *prog, command_s *com)
 {
-    if (how_many_args(com->parametres_type) != 3 || here_other_3_reg(com))
+    if (how_many_args(com->parametres_type) != 3 || com->parametres_type[2] != 'r')
         return prog->carry = 0;
     if (my_strcmp(com->parametres_type, "rrr"))
         return prog->carry = 0;
     prog->registres[com->params[3] - 1] =
     prog->registres[com->params[1] - 1] & prog->registres[com->params[2] - 1];
     prog->carry = 1;
-    return 0;
+    return 1;
 }
 
 int fun_or      (head_cor *cor, prog_t *prog, command_s *com)
 {
-    if (how_many_args(com->parametres_type) != 3 || here_other_3_reg(com))
+    if (how_many_args(com->parametres_type) != 3 || com->parametres_type[2] != 'r')
         return prog->carry = 0;
     if (my_strcmp(com->parametres_type, "rrr"))
         return prog->carry = 0;
     prog->registres[com->params[3] - 1] =
     prog->registres[com->params[1] - 1] | prog->registres[com->params[2] - 1];
     prog->carry = 1;
-    return 0;
+    return 1;
 }
 
 int fun_xor     (head_cor *cor, prog_t *prog, command_s *com)
 {
-    if (how_many_args(com->parametres_type) != 3 || here_other_3_reg(com))
+    if (how_many_args(com->parametres_type) != 3 || com->parametres_type[2] != 'r')
         return prog->carry = 0;
     if (my_strcmp(com->parametres_type, "rrr"))
         return prog->carry = 0;
     prog->registres[com->params[3] - 1] =
     prog->registres[com->params[1] - 1] ^ prog->registres[com->params[2] - 1];
     prog->carry = 1;
-    return 0;
+    return 1;
 }

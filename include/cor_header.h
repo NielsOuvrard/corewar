@@ -120,6 +120,10 @@ void free_alls_progs (prog_t *progs);
 
 int help (void);
 
+// main
+
+char *my_scanf (void);
+
 // openfile
 
 unsigned char *filepath_to_str (char *filepath, int *size_str);
