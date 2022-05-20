@@ -75,10 +75,6 @@ int open_programs (int ac, char **av)
     // free_my_head(cor);
     return 0;
 }
-// my_putstr("\n\nThe player NB_OF_PLAYER(NAME_OF_PLAYER)is alive.\n");
-// my_putstr("The player NB_OF_PLAYER(NAME_OF_PLAYER)has won.");
-// my_printf("REG_NUMBER : %d\n", REG_NUMBER);
-// my_printf("REG_SIZE : %d\n", REG_SIZE);
 
 int main (int ac, char **av)
 {

@@ -35,7 +35,7 @@ int how_many_args (char *list_args);
 // sti;            ok ?
 // fork;           ok (surment)
 // lld;            ok
-// lldi;           ok ?
+// lldi;           
 // lfork;          ok (surment)
 // aff;            ok
 
@@ -109,7 +109,7 @@ int fun_st      (head_cor *cor, prog_t *prog, command_s *com)
         return 0;
     if (com->parametres_type[0] == 'r') {
         prog->registres[com->params[1] - 1] = prog->registres[com->params[1] - 1];
-    } else if (com->parametres_type[1] == 'i') { // ? or ri
+    } else {// if (com->parametres_type[1] == 'i') { // ? or ri
         unsigned short value = com->params[2];
         short final_value;
         if (value >= 0x8000)
@@ -252,10 +252,8 @@ int fun_lld     (head_cor *cor, prog_t *prog, command_s *com)
     } else {
         return prog->carry = 0;
     }
-    // my_printf("ld : On met %d dans r%d\n", final_value, com->params[2]);
     prog->registres[com->params[2] - 1] = final_value;
-    prog->carry = 1;
-    return 1;
+    return prog->carry = 1;
 }
 
 // idx               idx             reg

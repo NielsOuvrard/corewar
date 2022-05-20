@@ -12,32 +12,6 @@
 #include <sys/uio.h>
 #include <unistd.h>
 
-// void disp_str_to_hexa (unsigned char *str, char *who, int size)
-// {
-//     if (!str)
-//         return;
-//     int b = 0;
-//     int time_force_print = 1;
-//     for (int i = 0; i < size; i++) {
-//         my_printf("\033[%dm", 97 - who[i]);
-//         // my_printf("\033[%dm", 107 - who[i]);
-//         char *binary = char_to_bin_str(str[i]);
-//         char *hexa;
-//         hexa = my_int_to_base(my_base_to_int(binary, 2), 16);
-//         if (my_strlen(hexa) < 2)
-//             my_putchar('0');
-//         if (my_strlen(hexa) < 1)
-//             my_putchar('0');
-//         my_putstr(hexa);
-//         my_putchar(' ');
-//         free(binary);
-//         free(hexa);
-//         my_putstr(MY_COLOR_RESET);
-//         if (++b == 64)
-//             my_printf("\n", "\n%d\n", i, b = 0);
-//     }
-// }
-
 char *char_to_hexa (char c)
 {
     char *str = malloc(sizeof(char) * 3);
