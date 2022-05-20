@@ -99,17 +99,17 @@ void begin_virtual_machine (head_cor *cor)
         // here
         // pb tourn en boucle lors d'un fork, WHY ?
     }
-    if (!stop)
-        return;
-    char *str = my_scanf();
-    if (!str) {
-        // free_my_head(cor);
-        return;
-    } else if (str[0] == 'a') {
-        dump_all(cor);
-    }
-    free(str);
-    my_printf("cycle live %d\n", cor->cycle_to_die_init);
+    // if (!stop)
+    //     return;
+    // char *str = my_scanf();
+    // if (!str) {
+    //     // free_my_head(cor);
+    //     return;
+    // } else if (str[0] == 'a') {
+    //     dump_all(cor);
+    // }
+    // free(str);
+    // my_printf("cycle live %d\n", cor->cycle_to_die_init);
 }
 
 int my_strcmp_end (char *str1, char *str2)

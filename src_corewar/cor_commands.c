@@ -180,7 +180,8 @@ int fun_sti     (head_cor *cor, prog_t *prog, command_s *com)
             move2 = (short)(com->params[2]);
         mem_mdfy = 1;
     } else {
-        prog->registres[com->params[2] - 1] = prog->registres[com->params[2] - 1];
+        my_printf("on copy r%d dans r%d\n", com->params[1], com->params[2]);
+        prog->registres[com->params[2] - 1] = prog->registres[com->params[1] - 1];
     }
     if (com->parametres_type[3] != 'r') {
         if ((unsigned short)com->params[3] >= 0x8000)
@@ -189,7 +190,7 @@ int fun_sti     (head_cor *cor, prog_t *prog, command_s *com)
             move3 = (short)(com->params[3]);
         mem_mdfy = 1;
     } else {
-        prog->registres[com->params[3] - 1] = prog->registres[com->params[3] - 1];
+        prog->registres[com->params[3] - 1] = prog->registres[com->params[1] - 1];
     }
     if (mem_mdfy) {
         int move_initiale = prog->pc + ((move2 + move3) % IDX_MOD);

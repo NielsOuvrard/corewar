@@ -75,6 +75,7 @@ void non_special_function (head_cor *cor, prog_t *prog, command_s *com)
 {
     // my_printf("ok here non_special_function\n");
     com->parametres_type = type_param_to_str(cor->mem[prog->pc + com->next_fun]);
+
     // my_printf("params : '%s'\n", com->parametres_type);
 
     // my_printf("on a les params : %s\n", com->parametres_type);
@@ -109,6 +110,12 @@ void execute_this_commande (head_cor *cor, prog_t *prog)
         a_special_function(cor, prog, com);
     } else {
         non_special_function(cor, prog, com);
+        for (int i = 0; com->parametres_type[i]; i++) {
+            if (com->parametres_type[i] == 'r' && (com->params[i] > 16 || com->params[i] < 0)) {
+                prog->pc = (((prog->pc + com->next_fun) % MEM_SIZE) + MEM_SIZE) % MEM_SIZE;
+                return;
+            }
+        }
         to_free = 1;
     }
     // my_printf("Commande %s executée\n", val.mnemonique);
