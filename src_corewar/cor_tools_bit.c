@@ -48,7 +48,8 @@ unsigned int char_nmb_to_int (unsigned char *str, int index, int size)
             decale = 0;
             index_str--;
         }
-        if ((str[(((index_str + index)% MEM_SIZE) + MEM_SIZE) % MEM_SIZE] >> decale) & 1)
+        if ((str[(((index_str + index) %
+        MEM_SIZE) + MEM_SIZE) % MEM_SIZE] >> decale) & 1)
             elem = modify_bit_n_in_int(elem, i, 1);
         decale++;
     }

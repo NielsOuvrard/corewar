@@ -14,15 +14,12 @@
 
 // brk
 // sbrk
-
 // strace
-
 // struct a {
 //     unsigned var : 7;
 //     unsigned vari : 32;
 //     int vari;
 // };
-
 char last_octet_int_to_char (int a)
 {
     char c = 0;

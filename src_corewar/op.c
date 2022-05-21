@@ -11,19 +11,6 @@
 #include "my.h"
 #include "op.h"
 
-// Le nombre de cycles de chaque instruction
-// leur représentation mnémonique
-// le nombre de paramètres
-// les types de paramètres possibles
-
-
-//    char         *mnemonique;
-//    char         nbr_args;
-//    args_type_t  type[MAX_ARGS_NUMBER];
-//    char         code;
-//    int          nbr_cycles;
-//    char         *comment;
-
 op_t op_tab[] = {
     {"live", 1, {T_DIR}, 1, 10, "alive"},
     {"ld", 2, {T_DIR | T_IND, T_REG}, 2, 5, "load"},
@@ -49,13 +36,3 @@ op_t op_tab[] = {
     {"aff", 1, {T_REG}, 16, 2, "aff"},
     {0, 0, {0}, 0, 0, 0}
 };
-
-// void find_commandes (char *str)
-// {
-//     for (int i = 0; str[i]; i++) {
-//         if (str[i] > 0 && str[i] <= 0x10) {
-//             op_t val = op_tab[str[i] -  1];
-//             my_printf("command : %d = %s\n", str[i], val.mnemonique);
-//         }
-//     }
-// }

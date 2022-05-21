@@ -40,9 +40,12 @@ typedef struct chmp_id {
 } chmp_id;
 
 typedef struct head_cor {
+    bool more_infos;
+    bool wait;
     int nmb_player;
     int cycle_to_die_init;
     int nmb_live_cycle;
+    bool dump;
     int recurence_dump;
     char *who;
     unsigned char *mem;
