@@ -22,7 +22,8 @@ int fun_live    (head_cor *cor, prog_t *prog, command_s *com)
         cor->cycle_to_die_init -= CYCLE_DELTA;
         cor->nmb_live_cycle = NBR_LIVE;
     }
-    my_printf("The player %d (%s)is alive.\n", com->params[1], prog->prog_name);
+    my_printf("The player %d (%s)is alive.\n",
+    com->params[1], prog->prog_name);
     prog->cycle_to_die = cor->cycle_to_die_init;
     return 1;
 }

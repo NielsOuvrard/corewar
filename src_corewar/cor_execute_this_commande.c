@@ -12,17 +12,21 @@
 #include <sys/uio.h>
 #include <unistd.h>
 
-void my_fill_funktab(int (*tab[16])(head_cor *cor, prog_t *prog, command_s *com));
+void my_fill_funktab(int (*tab[16])(head_cor *cor, prog_t *prog,
+command_s *com));
 
-void recup_params_according_to_str (head_cor *cor, prog_t *prog, command_s *com);
+void recup_params_according_to_str (head_cor *cor, prog_t *prog,
+command_s *com);
 
 void a_special_function (head_cor *cor, prog_t *prog, command_s *com);
 
-int non_special_function (head_cor *cor, prog_t *prog, command_s *com, int to_free);
+int non_special_function (head_cor *cor, prog_t *prog, command_s *com,
+int to_free);
 
 void disp_infos_com (prog_t *prog, command_s *com, op_t val)
 {
-    my_printf("\033[%dmprog %d ", 97 - prog->registres[0], prog->registres[0]);
+    my_printf("\033[%dmprog %d ", 97 - prog->registres[0],
+    prog->registres[0]);
     my_printf("PC = %d\n", prog->pc);
     my_printf("com %s%s%s\n", MY_COLOR_GREEN, val.mnemonique, MY_COLOR_RESET);
     my_printf("args : ");

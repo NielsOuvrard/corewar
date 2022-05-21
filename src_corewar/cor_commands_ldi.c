@@ -29,9 +29,11 @@ int fun_ldi     (head_cor *cor, prog_t *prog, command_s *com)
         com->parametres_type[3] != 'r')
         return prog->carry = 0;
     unsigned int s = char_nmb_to_int(
-    cor->mem, prog->pc + (com->params[1] % IDX_MOD), IND_SIZE) + com->params[2];
+    cor->mem, prog->pc + (com->params[1] %
+    IDX_MOD), IND_SIZE) + com->params[2];
     prog->registres[com->params[3] - 1] = ((char_nmb_to_int(cor->mem,
-    prog->registres[0] + (s % IDX_MOD), REG_SIZE) % MEM_SIZE) + MEM_SIZE) % MEM_SIZE;
+    prog->registres[0] + (s % IDX_MOD), REG_SIZE)
+    % MEM_SIZE) + MEM_SIZE) % MEM_SIZE;
     return prog->carry = 1;
 }
 

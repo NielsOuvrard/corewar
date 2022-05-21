@@ -15,7 +15,8 @@
 // reg , reg / dir
 // copy registres[params[1]] into param[2] (reg / ind)
 // diffère selon les arguments...
-// takes 2 parameters. It stores the first parameter’s value (which is a register) into
+// takes 2 parameters. It stores the first
+// parameter’s value (which is a register) into
 // the second (whether a register or a number).
 // et modifier le who
 // st r4,34 stores the content of r4 at the address PC + 34 % IDX_MOD.

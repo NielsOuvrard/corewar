@@ -49,7 +49,8 @@ void binary_to_mem_next (head_cor *cor, prog_t *prog, load_champ parametres)
     prog->registres = malloc(sizeof(int) * REG_NUMBER);
     for (int i = 1; i < REG_NUMBER; i++)
         prog->registres[i] = 0;
-    if (parametres.n && !exist_in_list(cor->champions_id, parametres.prog_nmb)) {
+    if (parametres.n && !exist_in_list(cor->champions_id,
+    parametres.prog_nmb)) {
         prog->registres[0] = parametres.prog_nmb;
     } else {
         while (exist_in_list(cor->champions_id, cor->nmb_player))

@@ -13,7 +13,8 @@
 #include <unistd.h>
 
 // ind / dir , reg
-// ld 34,r3 loads the REG_SIZE bytes starting at the address PC + 34 % IDX_MOD into r3.
+// ld 34,r3 loads the REG_SIZE bytes starting at
+// the address PC + 34 % IDX_MOD into r3.
 int fun_ld      (head_cor *cor, prog_t *prog, command_s *com)
 {
     if (how_many_args(com->parametres_type) != 2)
