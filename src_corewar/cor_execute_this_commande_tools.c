@@ -12,7 +12,8 @@
 #include <sys/uio.h>
 #include <unistd.h>
 
-void my_fill_funktab(int (*tab[16])(head_cor *cor, prog_t *prog, command_s *com))
+void my_fill_funktab(int (*tab[16])(head_cor *cor, prog_t *prog,
+command_s *com))
 {
     tab[0] = fun_live;
     tab[1] = fun_ld;
@@ -32,7 +33,8 @@ void my_fill_funktab(int (*tab[16])(head_cor *cor, prog_t *prog, command_s *com)
     tab[15] = fun_aff;
 }
 
-void recup_params_according_to_str (head_cor *cor, prog_t *prog, command_s *com)
+void recup_params_according_to_str (head_cor *cor, prog_t *prog,
+command_s *com)
 {
     unsigned char *str = cor->mem + prog->pc + com->next_fun;
     int index = 0, index_arr = 1;
@@ -67,14 +69,16 @@ void a_special_function (head_cor *cor, prog_t *prog, command_s *com)
         com->next_fun += DIR_SIZE;
         return;
     }
-    com->params[1] = char_nmb_to_int(cor->mem, prog->pc + com->next_fun, IND_SIZE);
+    com->params[1] = char_nmb_to_int(cor->mem, prog->pc +
+    com->next_fun, IND_SIZE);
     com->next_fun += IND_SIZE;
 }
 
 // my_printf("ok here non_special_function\n");
 // my_printf("params : '%s'\n", com->parametres_type);
 // my_printf("on a les params : %s\n", com->parametres_type);
-int non_special_function (head_cor *cor, prog_t *prog, command_s *com, int to_free)
+int non_special_function (head_cor *cor, prog_t *prog, command_s *com,
+int to_free)
 {
     com->parametres_type = type_param_to_str(
     cor->mem[prog->pc + com->next_fun]);
