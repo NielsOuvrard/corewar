@@ -22,7 +22,7 @@ prog_t *in_the_for_of_vm (head_cor *cor, prog_t *expl, int id, int *stop)
         expl->cycle_to_wait = how_many_cycles_for_next(cor->mem, expl->pc);
     }
     if (0 > (expl->cycle_to_die--)) {
-        // dump_all(cor);
+        dump_all(cor);
         cor->progs = delete_id_prog(cor->progs, id);
         expl = cor->progs;
         for (int i = 0; i < id - 1; i++)
